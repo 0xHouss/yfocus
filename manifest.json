@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "youn.focus-queue",
+  "name": "Focus Queue",
+  "version": "0.1.0",
+  "author": "youn",
+  "license": "MIT",
+  "description": "Task queue for the bar: always shows your current task. Jump (insert at top), add (enqueue), or pop (complete + promote next) from four hotkeys.",
+  "kinds": ["bar-widget", "overlay"],
+  "activation": "on-demand",
+  "keepLoaded": true,
+  "entryPoints": {
+    "barWidget": "BarWidget.qml",
+    "overlay": "FocusOverlay.qml"
+  },
+  "barWidget": {
+    "displayName": "Focus Queue",
+    "description": "Shows the task you are currently working on. Click to open the queue manager.",
+    "category": "Productivity",
+    "allowMultiple": false,
+    "defaultSection": "center"
+  }
+}
