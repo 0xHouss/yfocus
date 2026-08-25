@@ -1,9 +1,7 @@
-# youn.focus-queue
+# youn.yfocus
 
-Always-visible focus chip + tiny task queue for the Omarchy bar.
-
-The bar chip shows the task you are currently working on. Four hotkeys drive
-a tiny queue so you stop drifting into unrelated work:
+Omarchy plugin that helps with task management, it showcases your current task on the omarchy bar, and allows you to quickly enqueue, jump or pop a task
+So it basically allows you to manage your tasks, and constantly keep track of what you're currently working on.
 
 | Key              | Action                          |
 |------------------|---------------------------------|
