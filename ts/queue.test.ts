@@ -27,15 +27,30 @@ describe("emptyQueue", () => {
 });
 
 describe("add", () => {
-  test("appends to end and does not affect current", () => {
-    const s0 = emptyQueue();
-    const s1 = add(s0, "first", NOW);
-    const s2 = add(s1, "second", NOW);
-    expect(s2.tasks).toHaveLength(2);
-    expect(s2.tasks[0].title).toBe("first");
-    expect(s2.tasks[1].title).toBe("second");
-    expect(s2.current).toBeNull();
+  test("into an empty queue becomes current", () => {
+    const s1 = add(emptyQueue(), "first", NOW);
+    expect(s1.current).toBe(s1.tasks[0].id);
+    expect(getCurrent(s1)?.title).toBe("first");
+    expect(s1.tasks[0].startedAt).toBe(NOW);
+    assertInvariants(s1);
+
+    // A second add does not steal current; it queues behind.
+    const s2 = add(s1, "second", NOW + 1);
+    expect(s2.current).toBe(s1.current);
+    expect(s2.tasks.map((t) => t.title)).toEqual(["first", "second"]);
+    expect(s2.tasks[1].startedAt).toBeNull();
     assertInvariants(s2);
+  });
+
+  test("with only completed tasks left becomes current", () => {
+    let s = jump(emptyQueue(), "done-early", NOW);
+    s = pop(s, NOW + 1);
+    expect(s.current).toBeNull();
+    expect(getCompleted(s)).toHaveLength(1);
+
+    s = add(s, "fresh start", NOW + 2);
+    expect(getCurrent(s)?.title).toBe("fresh start");
+    assertInvariants(s);
   });
 
   test("add with current leaves current untouched", () => {
@@ -104,10 +119,14 @@ describe("pop", () => {
     assertInvariants(s);
   });
 
-  test("empty current is a no-op", () => {
-    const s0 = add(emptyQueue(), "only", NOW);
-    const s1 = pop(s0, NOW + 1);
-    expect(s1).toBe(s0);
+  test("pop with no current is a no-op", () => {
+    // Build a current-less state: pop the last open task so only
+    // history remains.
+    let s = jump(emptyQueue(), "solo", NOW);
+    s = pop(s, NOW + 1);
+    expect(s.current).toBeNull();
+    const s1 = pop(s, NOW + 2);
+    expect(s1).toBe(s);
   });
 
   test("pop when nothing queued: current becomes null", () => {

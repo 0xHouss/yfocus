@@ -90,24 +90,27 @@ export function jump(state: QueueState, title: string, now: number = Date.now())
 
 /**
  * Add: append a new task to the end of the queue.
- * - Does not affect current.
+ * - Does not affect current, EXCEPT when nothing is current (empty queue,
+ *   or only completed tasks left): then the added task starts right away.
  */
 export function add(state: QueueState, title: string, now: number = Date.now()): QueueState {
   const trimmed = title.trim();
   if (trimmed.length === 0) return state;
 
+  const becameCurrent = state.current === null;
   const appended: Task = {
     id: newId(),
     title: trimmed,
     note: "",
     position: state.tasks.length,
     createdAt: now,
-    startedAt: null,
+    startedAt: becameCurrent ? now : null,
     doneAt: null,
   };
 
   return {
     ...state,
+    current: becameCurrent ? appended.id : state.current,
     tasks: [...state.tasks, appended],
   };
 }

@@ -64,7 +64,7 @@ Item {
       }
 
       Text {
-        text: "Adds to the end of the queue — it runs after everything already queued."
+        text: "Adds to the end of the queue. If nothing is current, it starts right away."
         color: Qt.darker(root.foreground, 1.4)
         font.family: root.fontFamily
         font.pixelSize: Style.font.caption
@@ -86,7 +86,17 @@ Item {
           border.width: 1
           border.color: root.border
         }
-        onAccepted: root.submit()
+        // Single deterministic submit path (BeforeItem + consume) so one
+        // Enter can never leak past the field.
+        Keys.priority: Keys.BeforeItem
+        Keys.onReturnPressed: function (event) {
+          root.submit()
+          event.accepted = true
+        }
+        Keys.onEnterPressed: function (event) {
+          root.submit()
+          event.accepted = true
+        }
         Keys.onEscapePressed: function (event) {
           root.cancelled()
           event.accepted = true

@@ -27,6 +27,25 @@ describe("FocusModel.js mirrors ts/queue.ts", () => {
     expect(Model.getQueue(s).map((t) => t.id)).toEqual([firstId]);
   });
 
+  test("add into empty queue becomes current (parity with ts)", () => {
+    let s = Model.add(Model.emptyQueue(), "first");
+    expect(s.current).toBe(s.tasks[0].id);
+    expect(Model.getCurrent(s)?.title).toBe("first");
+    // second add queues behind, current unchanged
+    const firstId = s.current;
+    s = Model.add(s, "second");
+    expect(s.current).toBe(firstId);
+    expect(Model.getQueue(s).map((t) => t.title)).toEqual(["second"]);
+  });
+
+  test("add with only completed tasks left becomes current", () => {
+    let s = Model.jump(Model.emptyQueue(), "done-early");
+    s = Model.pop(s);
+    expect(s.current).toBeNull();
+    s = Model.add(s, "fresh start");
+    expect(Model.getCurrent(s)?.title).toBe("fresh start");
+  });
+
   test("add appends without touching current", () => {
     let s = Model.jump(Model.emptyQueue(), "cur");
     s = Model.add(s, "later");

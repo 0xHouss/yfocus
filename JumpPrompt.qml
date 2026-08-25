@@ -88,7 +88,17 @@ Item {
           border.width: 1
           border.color: root.border
         }
-        onAccepted: root.submit()
+        // Single deterministic submit path (BeforeItem + consume) so one
+        // Enter can never leak past the field.
+        Keys.priority: Keys.BeforeItem
+        Keys.onReturnPressed: function (event) {
+          root.submit()
+          event.accepted = true
+        }
+        Keys.onEnterPressed: function (event) {
+          root.submit()
+          event.accepted = true
+        }
         Keys.onEscapePressed: function (event) {
           root.cancelled()
           event.accepted = true

@@ -243,9 +243,16 @@ Item {
             root.applyReorder(root.selectedIndex, root.selectedIndex + 1)
           }
           event.accepted = true
-        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Space) {
+        } else if (event.key === Qt.Key_Space) {
+          // Space is the only promote key. Enter deliberately does nothing
+          // here: it belongs to the add input, and binding both meant one
+          // Enter press could add a task AND promote a queue row.
           var row = root.queueRows[root.selectedIndex]
           if (row) root.applySetCurrent(row.id)
+          event.accepted = true
+        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+          // Swallow stray Enters so they can never promote; submitting
+          // happens inside the focused input only.
           event.accepted = true
         } else if (event.key === Qt.Key_D && !(event.modifiers & Qt.ShiftModifier)) {
           var victim = root.queueRows[root.selectedIndex]

@@ -560,9 +560,9 @@ omarchy-shell shell toggle youn.focus-queue '{"mode":"jump"}'
 | Key         | Action (when input not focused)        |
 |-------------|----------------------------------------|
 | `n`         | Focus the add input                    |
-| `Enter`     | In add input: submit. Otherwise: focus selected row's task as current. |
+| `Space`     | Promote selected queued task to current. Enter is deliberately NOT bound: it belongs to the add input, so submitting can never double-fire as promote. |
 | `↑` / `↓`   | Move queue selection                   |
-| `Space`     | Toggle completion on selected          |
+| `Ctrl+↑/↓`  | Reorder selected within the queue      |
 | `d`         | Delete selected                        |
 | `Shift+D`   | Clear all completed (with confirm)     |
 | `Shift+J`   | Jump-promote selected to current       |

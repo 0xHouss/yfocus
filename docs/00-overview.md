@@ -19,7 +19,7 @@ the JSON store, the QML files, and the docs.
 | Term    | Hotkey           | Meaning |
 |---------|------------------|---------|
 | jump    | SUPER + SHIFT + T | Insert a new task at position 0. If a task is already current, it shifts to position 1. Every other task shifts down by one. Never destructive: nothing is lost, displaced, or marked done. |
-| add     | SUPER + ALT + T   | Append a new task to the end of the queue. |
+| add     | SUPER + ALT + T   | Append a new task to the end of the queue. If nothing is current (empty queue, or only completed tasks left), the added task starts right away. |
 | pop     | SUPER + T         | Mark the current task done and auto-promote the task at position 1 to current. |
 | manage  | SUPER + CTRL + T  | Open the full management overlay (current task, queue list, reorder, delete, all keybindings). |
 | chip    | (click)           | The bar element. Clicking it is equivalent to `manage`. |
@@ -230,3 +230,4 @@ reference later.
 - [`B-persistence.md`](B-persistence.md) — atomic JSON store, CLI binary
 - [`C-overlays.md`](C-overlays.md) — `FocusModel.js` + the three QML overlays
 - [`D-shell-and-publish.md`](D-shell-and-publish.md) — bar chip, Hyprland bindings, marketplace polish
+- [`INSTALL.md`](INSTALL.md) — user-facing install, configuration (keybindings), and deployment guide

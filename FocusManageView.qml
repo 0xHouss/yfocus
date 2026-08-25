@@ -280,11 +280,26 @@ Item {
           border.width: 1
           border.color: addInput.activeFocus ? Color.accent : root.border
         }
-        onAccepted: function () {
+
+        function submitCurrent() {
           var text = String(addInput.text || "").trim()
           if (text.length > 0) root.addSubmitted(text)
           addInput.text = ""
           // Keep focus in the input for rapid entry; Esc leaves.
+        }
+
+        // Single deterministic submit path: intercept Return/Enter BEFORE
+        // TextField's builtin handling (BeforeItem) and consume them here.
+        // No onAccepted fallback — mixing the two let one Enter press
+        // bubble to keyCatcher's promote binding as well.
+        Keys.priority: Keys.BeforeItem
+        Keys.onReturnPressed: function (event) {
+          addInput.submitCurrent()
+          event.accepted = true
+        }
+        Keys.onEnterPressed: function (event) {
+          addInput.submitCurrent()
+          event.accepted = true
         }
         Keys.onEscapePressed: function (event) {
           addInput.text = ""
@@ -299,7 +314,7 @@ Item {
 
       Text {
         Layout.fillWidth: true
-        text: "p pop · Enter/Space promote · d delete · ↑↓ select · Ctrl+↑↓ reorder · s completed · Shift+D clear done · n add · Esc close"
+        text: "p pop · Space promote · d delete · ↑↓ select · Ctrl+↑↓ reorder · s completed · Shift+D clear done · n add · Esc close"
         color: Qt.darker(root.foreground, 1.7)
         font.family: root.fontFamily
         font.pixelSize: Style.font.caption

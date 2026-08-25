@@ -106,25 +106,28 @@ function jump(state, title) {
   }
 }
 
-// Add: append to the end of the queue. Does not affect current.
+// Add: append to the end of the queue. Does not affect current, EXCEPT
+// when nothing is current (empty queue, or only completed tasks left):
+// then the added task starts right away.
 function add(state, title) {
   var trimmed = String(title || "").trim()
   if (trimmed.length === 0) return state
 
   var t = now()
+  var becameCurrent = state.current === null
   var appended = {
     id: newId(),
     title: trimmed,
     note: "",
     position: state.tasks.length,
     createdAt: t,
-    startedAt: null,
+    startedAt: becameCurrent ? t : null,
     doneAt: null,
   }
 
   return {
     version: VERSION,
-    current: state.current,
+    current: becameCurrent ? appended.id : state.current,
     tasks: state.tasks.concat([appended]),
   }
 }
