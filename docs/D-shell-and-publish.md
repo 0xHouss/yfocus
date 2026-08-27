@@ -24,7 +24,7 @@ the currently active task and summons the manager when clicked.
 - **Empty queue (current is null):** Renders a subtle indicator (e.g. `Focus: idle`)
   or compact icon to keep the bar clean while remaining interactive.
 - **Click action:** Summons the manage overlay by dispatching to
-  `omarchy-shell shell toggle youn.yfocus '{"mode":"manage"}'`.
+  `omarchy-shell shell toggle You-ne5.yfocus '{"mode":"manage"}'`.
 
 ### 7.2 `BarWidget.qml`
 
@@ -38,7 +38,7 @@ import qs.Commons
 
 BarWidget {
   id: root
-  moduleName: "youn.yfocus"
+  moduleName: "You-ne5.yfocus"
 
   property var state: ({ version: 1, current: null, tasks: [] })
   property var currentTask: getCurrentTask()
@@ -120,7 +120,7 @@ BarWidget {
       onClicked: {
         Quickshell.execDetached([
           "omarchy-shell", "shell", "toggle",
-          "youn.yfocus", "{\"mode\":\"manage\"}"
+          "You-ne5.yfocus", "{\"mode\":\"manage\"}"
         ])
       }
     }
@@ -144,9 +144,9 @@ four system-wide Hyprland keybindings.
 | Shortcut | Action | Command Dispatched |
 |---|---|---|
 | `SUPER + T` | Pop (complete current) | `yfocus pop` |
-| `SUPER + SHIFT + T` | Jump (insert at top) | `omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'` |
-| `SUPER + ALT + T` | Add (append to queue) | `omarchy-shell shell toggle youn.yfocus '{"mode":"add"}'` |
-| `SUPER + CTRL + T` | Manage (full manager) | `omarchy-shell shell toggle youn.yfocus '{"mode":"manage"}'` |
+| `SUPER + SHIFT + T` | Jump (insert at top) | `omarchy-shell shell toggle You-ne5.yfocus '{"mode":"jump"}'` |
+| `SUPER + ALT + T` | Add (append to queue) | `omarchy-shell shell toggle You-ne5.yfocus '{"mode":"add"}'` |
+| `SUPER + CTRL + T` | Manage (full manager) | `omarchy-shell shell toggle You-ne5.yfocus '{"mode":"manage"}'` |
 
 ### 8.2 `hooks/install.sh`
 
@@ -157,15 +157,15 @@ set -euo pipefail
 TARGET_CONF="${HOME}/.config/hypr/apps/yfocus.conf"
 MAIN_HYPR_CONF="${HOME}/.config/hypr/hyprland.conf"
 
-echo "Configuring Hyprland bindings for youn.yfocus..."
+echo "Configuring Hyprland bindings for You-ne5.yfocus..."
 mkdir -p "$(dirname "$TARGET_CONF")"
 
 cat > "$TARGET_CONF" << 'EOF'
-# youn.yfocus hotkeys
+# You-ne5.yfocus hotkeys
 bind = SUPER, T, exec, yfocus pop
-bind = SUPER SHIFT, T, exec, omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'
-bind = SUPER ALT, T, exec, omarchy-shell shell toggle youn.yfocus '{"mode":"add"}'
-bind = SUPER CTRL, T, exec, omarchy-shell shell toggle youn.yfocus '{"mode":"manage"}'
+bind = SUPER SHIFT, T, exec, omarchy-shell shell toggle You-ne5.yfocus '{"mode":"jump"}'
+bind = SUPER ALT, T, exec, omarchy-shell shell toggle You-ne5.yfocus '{"mode":"add"}'
+bind = SUPER CTRL, T, exec, omarchy-shell shell toggle You-ne5.yfocus '{"mode":"manage"}'
 EOF
 
 # Ensure source line exists in main hyprland.conf if not already present
@@ -181,7 +181,7 @@ if command -v hyprctl &>/dev/null; then
   hyprctl reload || true
 fi
 
-echo "youn.yfocus hotkeys installed."
+echo "You-ne5.yfocus hotkeys installed."
 ```
 
 Make it executable: `chmod +x hooks/install.sh`.

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "youn.yfocus",
+  "id": "You-ne5.yfocus",
   "name": "yfocus",
   "version": "0.1.0",
-  "author": "youn",
+  "author": "You-ne5",
   "license": "MIT",
   "description": "Task queue for the bar: always shows your current task. Jump (insert at top), add (enqueue), or pop (complete + promote next) from four hotkeys.",
   "kinds": ["bar-widget", "overlay"],

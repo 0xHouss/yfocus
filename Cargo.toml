@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 description = "Focus queue CLI (Rust port of ts/cli.ts)"
 license = "MIT"
-authors = ["youn"]
+authors = ["You-ne5"]
 
 [[bin]]
 name = "yfocus"

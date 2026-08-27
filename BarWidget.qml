@@ -9,7 +9,7 @@ import "FocusModel.js" as Model
 // manage overlay. Reads queue.json via FileView watch; never writes.
 BarWidget {
   id: root
-  moduleName: "youn.yfocus"
+  moduleName: "You-ne5.yfocus"
 
   property var state: Model.emptyQueue()
   readonly property var currentTask: Model.getCurrent(state)
@@ -35,19 +35,19 @@ BarWidget {
   function summonManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "summon",
-      "youn.yfocus", JSON.stringify({ mode: "manage" })
+      "You-ne5.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function toggleManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "toggle",
-      "youn.yfocus", JSON.stringify({ mode: "manage" })
+      "You-ne5.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function hideManage() {
-    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "youn.yfocus"])
+    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "You-ne5.yfocus"])
   }
 
   FileView {

@@ -1,4 +1,4 @@
-# youn.yfocus
+# You-ne5.yfocus
 
 Omarchy plugin that helps with task management, it showcases your current task on the omarchy bar, and allows you to quickly enqueue, jump or pop a task
 So it basically allows you to manage your tasks, and constantly keep track of what you're currently working on.
@@ -32,8 +32,8 @@ No files outside the plugin are touched. Bundled musl binaries (`bin/yfocus-x86_
 git clone <this-repo> && cd yfocus
 # source checkout without bundle:
 ./build.sh   # or: make bundle  (musl + sha256 + srcid, marketplace gate)
-ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
-omarchy plugin enable youn.yfocus
+ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
+omarchy plugin enable You-ne5.yfocus
 ```
 
 Hotkeys are **opt-in** and never installed automatically. Copy to `~/.config/hypr/bindings.lua` or run the helper that creates a dedicated file:
@@ -45,9 +45,9 @@ Hotkeys are **opt-in** and never installed automatically. Copy to `~/.config/hyp
 
 ```lua
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
+o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"manage\"}'")
 ```
 
 Full hotkey, bar, CLI, and deployment details in [`docs/INSTALL.md`](docs/INSTALL.md).

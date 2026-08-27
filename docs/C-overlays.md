@@ -502,15 +502,15 @@ rely on the fallback path.
 
 ```bash
 # 1. Hotkey opens the right overlay
-omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'
+omarchy-shell shell toggle You-ne5.yfocus '{"mode":"jump"}'
 # Expected: small card, "Jump to", placeholder "Task title", focus on input.
 # Type something, press Enter — overlay closes, queue.json updated.
 
 # 2. Same for add
-omarchy-shell shell toggle youn.yfocus '{"mode":"add"}'
+omarchy-shell shell toggle You-ne5.yfocus '{"mode":"add"}'
 
 # 3. Esc closes without persisting
-omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'
+omarchy-shell shell toggle You-ne5.yfocus '{"mode":"jump"}'
 # Press Esc. Verify queue.json unchanged.
 ```
 
@@ -905,7 +905,7 @@ background. Selected row is highlighted with `selectedBackground` and
 
 Manual checklist:
 
-- [ ] `omarchy-shell shell toggle youn.yfocus '{}'` opens the manage
+- [ ] `omarchy-shell shell toggle You-ne5.yfocus '{}'` opens the manage
   overlay.
 - [ ] Pressing `n` focuses the add input; typing and pressing Enter adds
   a task.

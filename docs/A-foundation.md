@@ -86,7 +86,7 @@ SOFTWARE.
 ### 0.5 `README.md` skeleton
 
 ```markdown
-# youn.yfocus
+# You-ne5.yfocus
 
 Always-visible focus chip + tiny task queue for the Omarchy bar.
 
@@ -104,9 +104,9 @@ appendices for implementation notes.
 
 ## Install (development)
 
-    ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
+    ln -s "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
     omarchy-shell shell rescanPlugins
-    omarchy plugin enable youn.yfocus
+    omarchy plugin enable You-ne5.yfocus
     omarchy restart shell
     ./hooks/install.sh
 ```
@@ -136,10 +136,10 @@ only a placeholder label. The plugin passes `omarchy plugin validate`.
 ```json
 {
   "schemaVersion": 1,
-  "id": "youn.yfocus",
+  "id": "You-ne5.yfocus",
   "name": "yfocus",
   "version": "0.1.0",
-  "author": "youn",
+  "author": "You-ne5",
   "license": "MIT",
   "description": "Task Queue, allowing you to enqueue, jump, or pop tasks, constantly shows current task to improve focus.",
   "kinds": ["bar-widget", "overlay"],
@@ -190,7 +190,7 @@ import qs.Commons
 
 BarWidget {
   id: root
-  moduleName: "youn.yfocus"
+  moduleName: "You-ne5.yfocus"
 
   Text {
     anchors.centerIn: parent
@@ -288,10 +288,10 @@ Item {
 ### 1.3 Symlink into the user plugins directory and validate
 
 ```bash
-ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
+ln -s "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
 omarchy plugin validate ./yfocus
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.yfocus
+omarchy plugin enable You-ne5.yfocus
 omarchy restart shell
 ```
 
@@ -304,7 +304,7 @@ Expected from `omarchy plugin validate`:
 Expected from `omarchy-shell shell listPlugins`:
 
 ```
-... contains an entry with id "youn.yfocus", kinds ["bar-widget","overlay"] ...
+... contains an entry with id "You-ne5.yfocus", kinds ["bar-widget","overlay"] ...
 ```
 
 ### 1.4 Layer rule (Hyprland)
@@ -327,13 +327,13 @@ hyprctl reload
 
 1. The bar should show a `focus.queue (bar placeholder)` chip somewhere in
    the center.
-2. `omarchy-shell shell toggle youn.yfocus '{}'` should summon the dark
+2. `omarchy-shell shell toggle You-ne5.yfocus '{}'` should summon the dark
    scrim with the placeholder text.
 
 ### Done when
 
 - `omarchy plugin validate ./yfocus` exits 0.
-- `omarchy-shell shell listPlugins` lists `youn.yfocus`.
+- `omarchy-shell shell listPlugins` lists `You-ne5.yfocus`.
 - The chip and overlay placeholders are visible.
 
 ---

@@ -1,4 +1,4 @@
-# `youn.yfocus` — Overview
+# `You-ne5.yfocus` — Overview
 
 A focus-discipline widget for the Omarchy status bar. A small chip on the bar
 always shows the task you are currently working on. Four hotkey-driven
@@ -7,7 +7,7 @@ into unrelated work.
 
 The plugin is a single git repo at `~/coding/personal/plugins/yfocus`. It is
 loaded into the running Omarchy shell via a symlink at
-`~/.config/omarchy/plugins/youn.yfocus`.
+`~/.config/omarchy/plugins/You-ne5.yfocus`.
 
 ---
 
@@ -180,9 +180,9 @@ bun test                      # ts/queue.test.ts
 ./build.sh                    # bun build --compile -> bin/yfocus
 
 # symlink into the user plugins directory
-ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
+ln -s "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.yfocus
+omarchy plugin enable You-ne5.yfocus
 omarchy restart shell
 
 # run the install hook once to wire the four hotkeys

@@ -48,9 +48,9 @@ make verify-bundle      # gate used by CI and releases
 If you cloned without `omarchy plugin add`:
 
 ```bash
-ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
+ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.yfocus
+omarchy plugin enable You-ne5.yfocus
 ```
 
 Enabling adds the bar widget to the center section of `~/.config/omarchy/shell.json`. Restart the shell once:
@@ -69,9 +69,9 @@ Create `~/.config/hypr/apps/yfocus.conf`:
 
 ```lua
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
+o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"manage\"}'")
 ```
 
 Or run the helper (creates the same file, backs up existing):
@@ -94,7 +94,7 @@ hyprctl binds -j | jq -r '.[] | select(.description | test("focus task|focus que
 # 68 + t  -> Open focus queue
 ```
 
-`yfocus pop` works without the shell (CLI-only). If `yfocus` is not on PATH, use the bundled shim: `~/.config/omarchy/plugins/youn.yfocus/bin/yfocus pop` or `YFOCUS_BIN=/path/to/yfocus`.
+`yfocus pop` works without the shell (CLI-only). If `yfocus` is not on PATH, use the bundled shim: `~/.config/omarchy/plugins/You-ne5.yfocus/bin/yfocus pop` or `YFOCUS_BIN=/path/to/yfocus`.
 
 ### Verify end-to-end
 
@@ -115,7 +115,7 @@ Add the four `o.bind` lines from above to the file you chose (`apps/yfocus.conf`
 | Dispatch | Effect |
 |---|---|
 | `yfocus pop` | CLI-only path; marks current done, promotes next. Works even if the shell is down. |
-| `omarchy-shell shell toggle youn.yfocus '{"mode":"…"}'` | Summons/hides the overlay in that mode: `jump` inserts at top (becomes current), `add` appends — and becomes current if nothing is current, `manage` opens the manager. |
+| `omarchy-shell shell toggle You-ne5.yfocus '{"mode":"…"}'` | Summons/hides the overlay in that mode: `jump` inserts at top (becomes current), `add` appends — and becomes current if nothing is current, `manage` opens the manager. |
 
 **Overlay-internal keys** (handled by the plugin, not Hyprland) while the
 manager is open:
@@ -140,14 +140,14 @@ In jump/add prompts: `Enter` submits, `Esc` cancels.
 Move the chip between sections without editing JSON:
 
 ```bash
-omarchy bar move youn.yfocus --section right
+omarchy bar move You-ne5.yfocus --section right
 ```
 
 Per-widget settings are inline on the entry in
 `~/.config/omarchy/shell.json` under `bar.layout.<section>`:
 
 ```json
-{ "id": "youn.yfocus", "idleLabel": "▸ focus" }
+{ "id": "You-ne5.yfocus", "idleLabel": "▸ focus" }
 ```
 
 | Setting | Default | Meaning |
@@ -189,8 +189,8 @@ a half-written `queue.json`.
 ### 2.4 Uninstall
 
 ```bash
-omarchy plugin disable youn.yfocus
-omarchy plugin remove youn.yfocus
+omarchy plugin disable You-ne5.yfocus
+omarchy plugin remove You-ne5.yfocus
 # if you used --apply:
 rm -f ~/.config/hypr/apps/yfocus.conf
 # optional: delete data
@@ -212,8 +212,8 @@ git clone <your-dotfiles> ~/dotfiles
 cd ~/coding/personal/plugins/yfocus
 # marketplace clones already have bin/yfocus-*; for a source checkout:
 make bundle   # or ./build.sh for a host-only dev build
-ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
-omarchy plugin enable youn.yfocus || omarchy-shell shell rescanPlugins
+ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
+omarchy plugin enable You-ne5.yfocus || omarchy-shell shell rescanPlugins
 # optional hotkeys:
 ./hooks/install.sh --apply   # or copy the 4 o.bind lines manually
 omarchy restart shell
@@ -255,10 +255,10 @@ Bump `version` in `Cargo.toml`, `manifest.json`, and `CHANGELOG.md` for every pu
 
 | Symptom | Fix |
 |---|---|
-| Chip missing from bar | `omarchy-shell shell listPlugins | jq '.[] | select(.id=="youn.yfocus")'` — check `enabled: true`; then `omarchy restart shell`. |
+| Chip missing from bar | `omarchy-shell shell listPlugins | jq '.[] | select(.id=="You-ne5.yfocus")'` — check `enabled: true`; then `omarchy restart shell`. |
 | Overlay summons but is invisible | Check `hyprctl layers | grep yfocus` right after summoning. Absent layer = QML load error; scan `journalctl --user` for warnings mentioning the plugin. |
-| Hotkey does nothing | `hyprctl binds -j | jq` grep for the description; check `~/.config/hypr/apps/yfocus.conf` or `bindings.lua` contains the `o.bind` lines; try `~/.config/omarchy/plugins/youn.yfocus/bin/yfocus pop` directly. |
-| `yfocus: command not found` | Bundled binary is `bin/yfocus` shim; add `~/.config/omarchy/plugins/youn.yfocus/bin` to PATH or `ln -sf` manually, or `cargo install --path .`, or set `YFOCUS_BIN`. |
+| Hotkey does nothing | `hyprctl binds -j | jq` grep for the description; check `~/.config/hypr/apps/yfocus.conf` or `bindings.lua` contains the `o.bind` lines; try `~/.config/omarchy/plugins/You-ne5.yfocus/bin/yfocus pop` directly. |
+| `yfocus: command not found` | Bundled binary is `bin/yfocus` shim; add `~/.config/omarchy/plugins/You-ne5.yfocus/bin` to PATH or `ln -sf` manually, or `cargo install --path .`, or set `YFOCUS_BIN`. |
 | Mutations don't persist | `YFOCUS_BIN` unset and `bin/yfocus-*` missing → run `make bundle` (or `cargo build --release` dev) or set `YFOCUS_BIN`. |
 | `queue.json` corrupt (JSON parse error on every op) | `yfocus show` reports the invariant violated. Move the file aside (`mv queue.json queue.json.bak`) and start fresh; completed history is lost but nothing else breaks. |
 | Keys typed go into the add field instead of triggering shortcuts | Press `Esc` once to hand control back to the shortcut handler (by design after using the input). |
