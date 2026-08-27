@@ -41,7 +41,7 @@ fn run_err(dir: &TempDir, args: &[&str]) -> (i32, String) {
 }
 
 fn read_queue(dir: &TempDir) -> Value {
-    let p = dir.path().join("omarchy/yfocus-queue/queue.json");
+    let p = dir.path().join("omarchy/yfocus/queue.json");
     let text = std::fs::read_to_string(&p).unwrap();
     serde_json::from_str(&text).unwrap()
 }
@@ -76,7 +76,7 @@ fn show_empty_and_path() {
     assert_eq!(v["tasks"].as_array().unwrap().len(), 0);
 
     let path = run_ok(&dir, &["path"]);
-    assert!(path.trim().ends_with("omarchy/yfocus-queue/queue.json"));
+    assert!(path.trim().ends_with("omarchy/yfocus/queue.json"));
     assert!(path.contains(dir.path().to_string_lossy().as_ref()));
 }
 
@@ -240,7 +240,7 @@ fn titles_with_spaces_joined() {
 fn corrupt_queue_reports_error() {
     let dir = TempDir::new().unwrap();
     run_ok(&dir, &["show"]); // creates file
-    let p = dir.path().join("omarchy/yfocus-queue/queue.json");
+    let p = dir.path().join("omarchy/yfocus/queue.json");
     std::fs::write(&p, "not json").unwrap();
     let (code, stderr) = run_err(&dir, &["show"]);
     assert_ne!(code, 0);

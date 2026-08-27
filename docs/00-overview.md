@@ -1,4 +1,4 @@
-# `youn.focus-queue` — Overview
+# `youn.yfocus` — Overview
 
 A focus-discipline widget for the Omarchy status bar. A small chip on the bar
 always shows the task you are currently working on. Four hotkey-driven
@@ -7,7 +7,7 @@ into unrelated work.
 
 The plugin is a single git repo at `~/coding/personal/plugins/yfocus`. It is
 loaded into the running Omarchy shell via a symlink at
-`~/.config/omarchy/plugins/youn.focus-queue`.
+`~/.config/omarchy/plugins/youn.yfocus`.
 
 ---
 
@@ -77,14 +77,14 @@ declared in the manifest:
 
 Layer rules live in `~/.config/hypr/apps/omarchy-shell.lua` and already cover
 the `omarchy-menu` / `omarchy-clipboard` namespaces; we extend that namespace
-list to add `omarchy-focus-queue`.
+list to add `omarchy-yfocus`.
 
 ---
 
 ## 3. Data model
 
-Stored at `$XDG_STATE_HOME/omarchy/yfocus-queue/queue.json`
-(default `~/.local/state/omarchy/yfocus-queue/queue.json`).
+Stored at `$XDG_STATE_HOME/omarchy/yfocus/queue.json`
+(default `~/.local/state/omarchy/yfocus/queue.json`).
 
 ```json
 {
@@ -180,9 +180,9 @@ bun test                      # ts/queue.test.ts
 ./build.sh                    # bun build --compile -> bin/yfocus
 
 # symlink into the user plugins directory
-ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
+ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.focus-queue
+omarchy plugin enable youn.yfocus
 omarchy restart shell
 
 # run the install hook once to wire the four hotkeys

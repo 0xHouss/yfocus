@@ -502,15 +502,15 @@ rely on the fallback path.
 
 ```bash
 # 1. Hotkey opens the right overlay
-omarchy-shell shell toggle youn.focus-queue '{"mode":"jump"}'
+omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'
 # Expected: small card, "Jump to", placeholder "Task title", focus on input.
 # Type something, press Enter — overlay closes, queue.json updated.
 
 # 2. Same for add
-omarchy-shell shell toggle youn.focus-queue '{"mode":"add"}'
+omarchy-shell shell toggle youn.yfocus '{"mode":"add"}'
 
 # 3. Esc closes without persisting
-omarchy-shell shell toggle youn.focus-queue '{"mode":"jump"}'
+omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'
 # Press Esc. Verify queue.json unchanged.
 ```
 
@@ -713,7 +713,7 @@ Item {
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+          + "/omarchy/yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -736,7 +736,7 @@ Item {
     visible: root.opened
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
-    WlrLayershell.namespace: "omarchy-focus-queue"
+    WlrLayershell.namespace: "omarchy-yfocus"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     exclusionMode: ExclusionMode.Ignore
@@ -905,7 +905,7 @@ background. Selected row is highlighted with `selectedBackground` and
 
 Manual checklist:
 
-- [ ] `omarchy-shell shell toggle youn.focus-queue '{}'` opens the manage
+- [ ] `omarchy-shell shell toggle youn.yfocus '{}'` opens the manage
   overlay.
 - [ ] Pressing `n` focuses the add input; typing and pressing Enter adds
   a task.

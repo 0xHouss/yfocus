@@ -9,12 +9,39 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 pub fn queue_path() -> PathBuf {
     if let Ok(base) = std::env::var("XDG_STATE_HOME") {
         if !base.is_empty() {
+            return PathBuf::from(base).join("omarchy/yfocus/queue.json");
+        }
+    }
+    let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
+    PathBuf::from(home)
+        .join(".local/state/omarchy/yfocus/queue.json")
+}
+
+fn legacy_queue_path() -> PathBuf {
+    if let Ok(base) = std::env::var("XDG_STATE_HOME") {
+        if !base.is_empty() {
             return PathBuf::from(base).join("omarchy/yfocus-queue/queue.json");
         }
     }
     let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
     PathBuf::from(home)
         .join(".local/state/omarchy/yfocus-queue/queue.json")
+}
+
+fn maybe_migrate_legacy() {
+    let new = queue_path();
+    let old = legacy_queue_path();
+    if new == old {
+        return;
+    }
+    if new.exists() || !old.exists() {
+        return;
+    }
+    // Migrate old → new (best-effort)
+    if let Some(parent) = new.parent() {
+        let _ = fs::create_dir_all(parent);
+    }
+    let _ = fs::copy(&old, &new);
 }
 
 fn lock_dir() -> PathBuf {
@@ -106,6 +133,7 @@ fn ensure_dir(path: &Path) -> Result<(), String> {
 }
 
 pub fn read_queue() -> Result<QueueState, String> {
+    maybe_migrate_legacy();
     read_queue_at(&queue_path())
 }
 
@@ -132,6 +160,7 @@ pub fn read_queue_at(path: &Path) -> Result<QueueState, String> {
 }
 
 pub fn write_queue(state: &QueueState) -> Result<(), String> {
+    maybe_migrate_legacy();
     write_queue_at(state, &queue_path())
 }
 
@@ -167,6 +196,9 @@ pub fn mutate_at<F>(f: F, path: &Path) -> Result<QueueState, String>
 where
     F: FnOnce(&QueueState) -> QueueState,
 {
+    if path == queue_path() {
+        maybe_migrate_legacy();
+    }
     let lock = lock_dir_for(path);
     acquire_lock_for(&lock)?;
     let result = (|| -> Result<QueueState, String> {
@@ -295,7 +327,7 @@ mod tests {
         }
         assert_eq!(
             queue_path(),
-            PathBuf::from("/tmp/test-xdg/omarchy/yfocus-queue/queue.json")
+            PathBuf::from("/tmp/test-xdg/omarchy/yfocus/queue.json")
         );
         unsafe {
             std::env::remove_var("XDG_STATE_HOME");

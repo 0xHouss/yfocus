@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "youn.focus-queue",
-  "name": "Focus Queue",
+  "id": "youn.yfocus",
+  "name": "yfocus",
   "version": "0.1.0",
   "author": "youn",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "overlay": "FocusOverlay.qml"
   },
   "barWidget": {
-    "displayName": "Focus Queue",
+    "displayName": "yfocus",
     "description": "Shows the task you are currently working on. Click to open the queue manager.",
     "category": "Productivity",
     "allowMultiple": false,

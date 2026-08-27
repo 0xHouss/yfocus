@@ -175,7 +175,7 @@ Item {
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+          + "/omarchy/yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -187,6 +187,11 @@ Item {
   function decodeFileUrl(url) {
     var p = String(url).replace(/^file:\/\//, "")
     try { return decodeURIComponent(p) } catch (e) { return p }
+  }
+  Process {
+    id: legacyMigrate
+    command: ["bash", "-c", "old=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue/queue.json\"; new=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus/queue.json\"; test -f \"$old\" && test ! -f \"$new\" && mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\" || true"]
+    onExited: function(code) { queueFile.reload() }
   }
   // Arch-aware bundled binary, like obsidian-daily-qs: prefers
   // bin/yfocus-<arch>, falls back to bin/yfocus shim, then to PATH.
@@ -221,6 +226,7 @@ Item {
       bin = decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
     }
     root.executablePath = bin
+    legacyMigrate.running = true
     archProbe.running = true
     queueFile.reload()
   }
@@ -230,7 +236,7 @@ Item {
     visible: root.opened
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
-    WlrLayershell.namespace: "omarchy-focus-queue"
+    WlrLayershell.namespace: "omarchy-yfocus"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     exclusionMode: ExclusionMode.Ignore

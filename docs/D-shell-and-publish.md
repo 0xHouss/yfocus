@@ -24,7 +24,7 @@ the currently active task and summons the manager when clicked.
 - **Empty queue (current is null):** Renders a subtle indicator (e.g. `Focus: idle`)
   or compact icon to keep the bar clean while remaining interactive.
 - **Click action:** Summons the manage overlay by dispatching to
-  `omarchy-shell shell toggle youn.focus-queue '{"mode":"manage"}'`.
+  `omarchy-shell shell toggle youn.yfocus '{"mode":"manage"}'`.
 
 ### 7.2 `BarWidget.qml`
 
@@ -38,7 +38,7 @@ import qs.Commons
 
 BarWidget {
   id: root
-  moduleName: "youn.focus-queue"
+  moduleName: "youn.yfocus"
 
   property var state: ({ version: 1, current: null, tasks: [] })
   property var currentTask: getCurrentTask()
@@ -67,7 +67,7 @@ BarWidget {
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+          + "/omarchy/yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -120,7 +120,7 @@ BarWidget {
       onClicked: {
         Quickshell.execDetached([
           "omarchy-shell", "shell", "toggle",
-          "youn.focus-queue", "{\"mode\":\"manage\"}"
+          "youn.yfocus", "{\"mode\":\"manage\"}"
         ])
       }
     }
@@ -144,9 +144,9 @@ four system-wide Hyprland keybindings.
 | Shortcut | Action | Command Dispatched |
 |---|---|---|
 | `SUPER + T` | Pop (complete current) | `yfocus pop` |
-| `SUPER + SHIFT + T` | Jump (insert at top) | `omarchy-shell shell toggle youn.focus-queue '{"mode":"jump"}'` |
-| `SUPER + ALT + T` | Add (append to queue) | `omarchy-shell shell toggle youn.focus-queue '{"mode":"add"}'` |
-| `SUPER + CTRL + T` | Manage (full manager) | `omarchy-shell shell toggle youn.focus-queue '{"mode":"manage"}'` |
+| `SUPER + SHIFT + T` | Jump (insert at top) | `omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'` |
+| `SUPER + ALT + T` | Add (append to queue) | `omarchy-shell shell toggle youn.yfocus '{"mode":"add"}'` |
+| `SUPER + CTRL + T` | Manage (full manager) | `omarchy-shell shell toggle youn.yfocus '{"mode":"manage"}'` |
 
 ### 8.2 `hooks/install.sh`
 
@@ -154,26 +154,26 @@ four system-wide Hyprland keybindings.
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_CONF="${HOME}/.config/hypr/apps/yfocus-queue.conf"
+TARGET_CONF="${HOME}/.config/hypr/apps/yfocus.conf"
 MAIN_HYPR_CONF="${HOME}/.config/hypr/hyprland.conf"
 
-echo "Configuring Hyprland bindings for youn.focus-queue..."
+echo "Configuring Hyprland bindings for youn.yfocus..."
 mkdir -p "$(dirname "$TARGET_CONF")"
 
 cat > "$TARGET_CONF" << 'EOF'
-# youn.focus-queue hotkeys
+# youn.yfocus hotkeys
 bind = SUPER, T, exec, yfocus pop
-bind = SUPER SHIFT, T, exec, omarchy-shell shell toggle youn.focus-queue '{"mode":"jump"}'
-bind = SUPER ALT, T, exec, omarchy-shell shell toggle youn.focus-queue '{"mode":"add"}'
-bind = SUPER CTRL, T, exec, omarchy-shell shell toggle youn.focus-queue '{"mode":"manage"}'
+bind = SUPER SHIFT, T, exec, omarchy-shell shell toggle youn.yfocus '{"mode":"jump"}'
+bind = SUPER ALT, T, exec, omarchy-shell shell toggle youn.yfocus '{"mode":"add"}'
+bind = SUPER CTRL, T, exec, omarchy-shell shell toggle youn.yfocus '{"mode":"manage"}'
 EOF
 
 # Ensure source line exists in main hyprland.conf if not already present
 if [ -f "$MAIN_HYPR_CONF" ]; then
-  if ! grep -q "source = ~/.config/hypr/apps/yfocus-queue.conf" "$MAIN_HYPR_CONF"; then
+  if ! grep -q "source = ~/.config/hypr/apps/yfocus.conf" "$MAIN_HYPR_CONF"; then
     echo "" >> "$MAIN_HYPR_CONF"
-    echo "# Focus Queue Keybindings" >> "$MAIN_HYPR_CONF"
-    echo "source = ~/.config/hypr/apps/yfocus-queue.conf" >> "$MAIN_HYPR_CONF"
+    echo "# yfocus Keybindings" >> "$MAIN_HYPR_CONF"
+    echo "source = ~/.config/hypr/apps/yfocus.conf" >> "$MAIN_HYPR_CONF"
   fi
 fi
 
@@ -181,7 +181,7 @@ if command -v hyprctl &>/dev/null; then
   hyprctl reload || true
 fi
 
-echo "youn.focus-queue hotkeys installed."
+echo "youn.yfocus hotkeys installed."
 ```
 
 Make it executable: `chmod +x hooks/install.sh`.
@@ -224,4 +224,4 @@ test("FocusModel.js exports match ts/queue.ts exports", async () => {
 - [ ] `preview.png` is an accurate 16:9 screenshot showing the bar chip and manage overlay.
 - [ ] `LICENSE` is present (MIT).
 - [ ] `README.md` clearly lists keybindings and installation steps.
-- [ ] Hyprland layer rules are updated for `omarchy-focus-queue` namespace.
+- [ ] Hyprland layer rules are updated for `omarchy-yfocus` namespace.

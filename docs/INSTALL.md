@@ -48,9 +48,9 @@ make verify-bundle      # gate used by CI and releases
 If you cloned without `omarchy plugin add`:
 
 ```bash
-ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
+ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.focus-queue
+omarchy plugin enable youn.yfocus
 ```
 
 Enabling adds the bar widget to the center section of `~/.config/omarchy/shell.json`. Restart the shell once:
@@ -65,13 +65,13 @@ No file is modified automatically. Add the bindings manually where you keep Hypr
 
 **Option A — dedicated file (recommended, never touches your bindings.lua):**
 
-Create `~/.config/hypr/apps/yfocus-queue.conf`:
+Create `~/.config/hypr/apps/yfocus.conf`:
 
 ```lua
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"manage\"}'")
+o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
 ```
 
 Or run the helper (creates the same file, backs up existing):
@@ -94,7 +94,7 @@ hyprctl binds -j | jq -r '.[] | select(.description | test("focus task|focus que
 # 68 + t  -> Open focus queue
 ```
 
-`yfocus pop` works without the shell (CLI-only). If `yfocus` is not on PATH, use the bundled shim: `~/.config/omarchy/plugins/youn.focus-queue/bin/yfocus pop` or `YFOCUS_BIN=/path/to/yfocus`.
+`yfocus pop` works without the shell (CLI-only). If `yfocus` is not on PATH, use the bundled shim: `~/.config/omarchy/plugins/youn.yfocus/bin/yfocus pop` or `YFOCUS_BIN=/path/to/yfocus`.
 
 ### Verify end-to-end
 
@@ -108,14 +108,14 @@ hyprctl binds -j | jq -r '.[] | select(.description | test("focus task|focus que
 
 ### 2.1 Keybindings (system-level)
 
-Add the four `o.bind` lines from above to the file you chose (`apps/yfocus-queue.conf` or `bindings.lua`). The plugin never rewrites your config at runtime — you own the bindings and can change the mod/key string (`"SUPER + E"` etc.) without the plugin overwriting them.
+Add the four `o.bind` lines from above to the file you chose (`apps/yfocus.conf` or `bindings.lua`). The plugin never rewrites your config at runtime — you own the bindings and can change the mod/key string (`"SUPER + E"` etc.) without the plugin overwriting them.
 
 **What each dispatch does:**
 
 | Dispatch | Effect |
 |---|---|
 | `yfocus pop` | CLI-only path; marks current done, promotes next. Works even if the shell is down. |
-| `omarchy-shell shell toggle youn.focus-queue '{"mode":"…"}'` | Summons/hides the overlay in that mode: `jump` inserts at top (becomes current), `add` appends — and becomes current if nothing is current, `manage` opens the manager. |
+| `omarchy-shell shell toggle youn.yfocus '{"mode":"…"}'` | Summons/hides the overlay in that mode: `jump` inserts at top (becomes current), `add` appends — and becomes current if nothing is current, `manage` opens the manager. |
 
 **Overlay-internal keys** (handled by the plugin, not Hyprland) while the
 manager is open:
@@ -140,14 +140,14 @@ In jump/add prompts: `Enter` submits, `Esc` cancels.
 Move the chip between sections without editing JSON:
 
 ```bash
-omarchy bar move youn.focus-queue --section right
+omarchy bar move youn.yfocus --section right
 ```
 
 Per-widget settings are inline on the entry in
 `~/.config/omarchy/shell.json` under `bar.layout.<section>`:
 
 ```json
-{ "id": "youn.focus-queue", "idleLabel": "▸ focus" }
+{ "id": "youn.yfocus", "idleLabel": "▸ focus" }
 ```
 
 | Setting | Default | Meaning |
@@ -179,7 +179,7 @@ Environment variables:
 
 | Variable | Purpose |
 |---|---|
-| `XDG_STATE_HOME` | Data root; defaults to `~/.local/state`. Queue lives at `$XDG_STATE_HOME/omarchy/yfocus-queue/queue.json`. |
+| `XDG_STATE_HOME` | Data root; defaults to `~/.local/state`. Queue lives at `$XDG_STATE_HOME/omarchy/yfocus/queue.json`. |
 | `YFOCUS_BIN` | Overrides the bundled CLI path resolved by the overlay. Set it when running without the bundled musl binary. |
 
 Writes are serialized with a lock directory and committed via
@@ -189,12 +189,12 @@ a half-written `queue.json`.
 ### 2.4 Uninstall
 
 ```bash
-omarchy plugin disable youn.focus-queue
-omarchy plugin remove youn.focus-queue
+omarchy plugin disable youn.yfocus
+omarchy plugin remove youn.yfocus
 # if you used --apply:
-rm -f ~/.config/hypr/apps/yfocus-queue.conf
+rm -f ~/.config/hypr/apps/yfocus.conf
 # optional: delete data
-rm -rf "${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue"
+rm -rf "${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus"
 ```
 
 The plugin never modifies `~/.config/hypr/bindings.lua` — if you added bindings there manually, remove those four `o.bind` lines yourself.
@@ -212,8 +212,8 @@ git clone <your-dotfiles> ~/dotfiles
 cd ~/coding/personal/plugins/yfocus
 # marketplace clones already have bin/yfocus-*; for a source checkout:
 make bundle   # or ./build.sh for a host-only dev build
-ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
-omarchy plugin enable youn.focus-queue || omarchy-shell shell rescanPlugins
+ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
+omarchy plugin enable youn.yfocus || omarchy-shell shell rescanPlugins
 # optional hotkeys:
 ./hooks/install.sh --apply   # or copy the 4 o.bind lines manually
 omarchy restart shell
@@ -222,8 +222,8 @@ omarchy restart shell
 Notes for multi-machine setups:
 
 - Bundled binaries (`bin/yfocus-*`, `bin/yfocus` shim) **are** committed via `make bundle` (reproducible musl). No per-machine rebuild needed.
-- Task data is deliberately **not** in the repo (it lives in `$XDG_STATE_HOME`). Sync it across machines by pointing `XDG_STATE_HOME/omarchy/yfocus-queue` at a Syncthing/rsync folder if wanted — the lock protocol tolerates concurrent writers.
-- Hotkeys are owned by you in `apps/yfocus-queue.conf` or `bindings.lua` — no plugin-side regeneration to propagate.
+- Task data is deliberately **not** in the repo (it lives in `$XDG_STATE_HOME`). Sync it across machines by pointing `XDG_STATE_HOME/omarchy/yfocus` at a Syncthing/rsync folder if wanted — the lock protocol tolerates concurrent writers.
+- Hotkeys are owned by you in `apps/yfocus.conf` or `bindings.lua` — no plugin-side regeneration to propagate.
 
 ### 3.2 Publishing to the marketplace
 
@@ -255,10 +255,10 @@ Bump `version` in `Cargo.toml`, `manifest.json`, and `CHANGELOG.md` for every pu
 
 | Symptom | Fix |
 |---|---|
-| Chip missing from bar | `omarchy-shell shell listPlugins | jq '.[] | select(.id=="youn.focus-queue")'` — check `enabled: true`; then `omarchy restart shell`. |
-| Overlay summons but is invisible | Check `hyprctl layers | grep focus-queue` right after summoning. Absent layer = QML load error; scan `journalctl --user` for warnings mentioning the plugin. |
-| Hotkey does nothing | `hyprctl binds -j | jq` grep for the description; check `~/.config/hypr/apps/yfocus-queue.conf` or `bindings.lua` contains the `o.bind` lines; try `~/.config/omarchy/plugins/youn.focus-queue/bin/yfocus pop` directly. |
-| `yfocus: command not found` | Bundled binary is `bin/yfocus` shim; add `~/.config/omarchy/plugins/youn.focus-queue/bin` to PATH or `ln -sf` manually, or `cargo install --path .`, or set `YFOCUS_BIN`. |
+| Chip missing from bar | `omarchy-shell shell listPlugins | jq '.[] | select(.id=="youn.yfocus")'` — check `enabled: true`; then `omarchy restart shell`. |
+| Overlay summons but is invisible | Check `hyprctl layers | grep yfocus` right after summoning. Absent layer = QML load error; scan `journalctl --user` for warnings mentioning the plugin. |
+| Hotkey does nothing | `hyprctl binds -j | jq` grep for the description; check `~/.config/hypr/apps/yfocus.conf` or `bindings.lua` contains the `o.bind` lines; try `~/.config/omarchy/plugins/youn.yfocus/bin/yfocus pop` directly. |
+| `yfocus: command not found` | Bundled binary is `bin/yfocus` shim; add `~/.config/omarchy/plugins/youn.yfocus/bin` to PATH or `ln -sf` manually, or `cargo install --path .`, or set `YFOCUS_BIN`. |
 | Mutations don't persist | `YFOCUS_BIN` unset and `bin/yfocus-*` missing → run `make bundle` (or `cargo build --release` dev) or set `YFOCUS_BIN`. |
 | `queue.json` corrupt (JSON parse error on every op) | `yfocus show` reports the invariant violated. Move the file aside (`mv queue.json queue.json.bak`) and start fresh; completed history is lost but nothing else breaks. |
 | Keys typed go into the add field instead of triggering shortcuts | Press `Esc` once to hand control back to the shortcut handler (by design after using the input). |

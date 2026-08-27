@@ -6,7 +6,33 @@ import { dirname } from "node:path";
 export function queuePath(): string {
   const base =
     process.env.XDG_STATE_HOME ?? `${process.env.HOME}/.local/state`;
+  return `${base}/omarchy/yfocus/queue.json`;
+}
+
+export function legacyQueuePath(): string {
+  const base =
+    process.env.XDG_STATE_HOME ?? `${process.env.HOME}/.local/state`;
   return `${base}/omarchy/yfocus-queue/queue.json`;
+}
+
+async function maybeMigrateLegacy(): Promise<void> {
+  const { copyFile, stat: stat2 } = await import("node:fs/promises");
+  const newPath = queuePath();
+  const oldPath = legacyQueuePath();
+  if (newPath === oldPath) return;
+  try {
+    await stat2(newPath);
+    return; // new exists
+  } catch {}
+  try {
+    await stat2(oldPath);
+  } catch {
+    return; // old missing
+  }
+  await ensureDir(newPath);
+  try {
+    await copyFile(oldPath, newPath);
+  } catch {}
 }
 
 async function ensureDir(path: string): Promise<void> {
@@ -73,6 +99,7 @@ async function releaseLock(): Promise<void> {
  * can surface a clean error instead of silently destroying data.
  */
 export async function readQueue(path: string = queuePath()): Promise<QueueState> {
+  if (path === queuePath()) await maybeMigrateLegacy();
   await ensureDir(path);
   let text: string;
   try {
@@ -103,6 +130,7 @@ export async function writeQueue(
   state: QueueState,
   path: string = queuePath(),
 ): Promise<void> {
+  if (path === queuePath()) await maybeMigrateLegacy();
   assertInvariants(state);
   await ensureDir(path);
   const tmp = `${path}.tmp.${process.pid}.${Date.now()}`;

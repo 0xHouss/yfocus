@@ -9,7 +9,7 @@ import "FocusModel.js" as Model
 // manage overlay. Reads queue.json via FileView watch; never writes.
 BarWidget {
   id: root
-  moduleName: "youn.focus-queue"
+  moduleName: "youn.yfocus"
 
   property var state: Model.emptyQueue()
   readonly property var currentTask: Model.getCurrent(state)
@@ -35,25 +35,25 @@ BarWidget {
   function summonManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "summon",
-      "youn.focus-queue", JSON.stringify({ mode: "manage" })
+      "youn.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function toggleManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "toggle",
-      "youn.focus-queue", JSON.stringify({ mode: "manage" })
+      "youn.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function hideManage() {
-    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "youn.focus-queue"])
+    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "youn.yfocus"])
   }
 
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+          + "/omarchy/yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -110,6 +110,12 @@ BarWidget {
     root._binPath = base
     return base
   }
+  // Migrate legacy state from yfocus-queue → yfocus (one-shot)
+  Process {
+    id: legacyMigrate
+    command: ["bash", "-c", "old=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue/queue.json\"; new=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus/queue.json\"; test -f \"$old\" && test ! -f \"$new\" && mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\" || true"]
+    onExited: function(code) { queueFile.reload() }
+  }
   // Arch detection (once at startup) — mirrors obsidian-daily-qs
   property string hostArch: ""
   property string _archBundled: ""
@@ -139,5 +145,8 @@ BarWidget {
       }
     }
   }
-  Component.onCompleted: archProbe.running = true
+  Component.onCompleted: {
+    legacyMigrate.running = true
+    archProbe.running = true
+  }
 }

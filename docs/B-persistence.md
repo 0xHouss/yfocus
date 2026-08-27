@@ -15,8 +15,8 @@ terminal, and the JSON file is safe to corrupt on purpose for testing.
 
 ### 3.1 File location
 
-`$XDG_STATE_HOME/omarchy/yfocus-queue/queue.json`, defaulting to
-`~/.local/state/omarchy/yfocus-queue/queue.json`.
+`$XDG_STATE_HOME/omarchy/yfocus/queue.json`, defaulting to
+`~/.local/state/omarchy/yfocus/queue.json`.
 
 We keep the file in **state**, not config: it is per-session mutable data,
 not something the user edits by hand.
@@ -32,7 +32,7 @@ import { dirname } from "node:path";
 export function queuePath(): string {
   const base = process.env.XDG_STATE_HOME
     ?? `${process.env.HOME}/.local/state`;
-  return `${base}/omarchy/yfocus-queue/queue.json`;
+  return `${base}/omarchy/yfocus/queue.json`;
 }
 
 async function ensureDir(path: string): Promise<void> {
@@ -269,7 +269,7 @@ Run each from the repo root:
 ```bash
 # 1. Empty queue
 ./bin/yfocus show           # {"version":1,"current":null,"tasks":[]}
-./bin/yfocus path           # /home/<you>/.local/state/omarchy/yfocus-queue/queue.json
+./bin/yfocus path           # /home/<you>/.local/state/omarchy/yfocus/queue.json
 
 # 2. Jump, add, pop
 ./bin/yfocus jump "first task"

@@ -32,30 +32,30 @@ No files outside the plugin are touched. Bundled musl binaries (`bin/yfocus-x86_
 git clone <this-repo> && cd yfocus
 # source checkout without bundle:
 ./build.sh   # or: make bundle  (musl + sha256 + srcid, marketplace gate)
-ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
-omarchy plugin enable youn.focus-queue
+ln -sfn "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
+omarchy plugin enable youn.yfocus
 ```
 
 Hotkeys are **opt-in** and never installed automatically. Copy to `~/.config/hypr/bindings.lua` or run the helper that creates a dedicated file:
 
 ```bash
-./hooks/install.sh --apply   # creates ~/.config/hypr/apps/yfocus-queue.conf
+./hooks/install.sh --apply   # creates ~/.config/hypr/apps/yfocus.conf
 # or manually:
 ```
 
 ```lua
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"manage\"}'")
+o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
 ```
 
 Full hotkey, bar, CLI, and deployment details in [`docs/INSTALL.md`](docs/INSTALL.md).
 
 ## Data
 
-Tasks live in `$XDG_STATE_HOME/omarchy/yfocus-queue/queue.json`
-(default `~/.local/state/omarchy/yfocus-queue/queue.json`). The CLI can drive
+Tasks live in `$XDG_STATE_HOME/omarchy/yfocus/queue.json`
+(default `~/.local/state/omarchy/yfocus/queue.json`). The CLI can drive
 the queue without any UI (prefers `bin/yfocus-<arch>` then `bin/yfocus` shim, then `yfocus` on PATH, then `YFOCUS_BIN`):
 
 ```bash
