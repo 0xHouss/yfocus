@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+arch="$(uname -m)"
+# Resolve symlink (e.g. ~/.local/bin/yfocus → plugin/bin/yfocus)
+target="$0"
+if command -v readlink >/dev/null 2>&1; then
+  target="$(readlink -f "$0" 2>/dev/null || echo "$0")"
+elif command -v realpath >/dev/null 2>&1; then
+  target="$(realpath "$0" 2>/dev/null || echo "$0")"
+fi
+dir="$(CDPATH= cd -- "$(dirname -- "$target")" && pwd)"
+case "$arch" in
+x86_64) exec "$dir/yfocus-x86_64" "$@" ;;
+aarch64) exec "$dir/yfocus-aarch64" "$@" ;;
+*) echo "yfocus: unsupported architecture: $arch" >&2; exit 1 ;;
+esac
