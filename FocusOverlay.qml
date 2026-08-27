@@ -172,10 +172,10 @@ Item {
     }
   }
 
+  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/yfocus"
   FileView {
     id: queueFile
-    path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+    path: root.stateDir + "/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -184,17 +184,58 @@ Item {
     onFileChanged: reload()
   }
 
+  function decodeFileUrl(url) {
+    var p = String(url).replace(/^file:\/\//, "")
+    try { return decodeURIComponent(p) } catch (e) { return p }
+  }
+  Process {
+    id: ensureStateDir
+    command: ["mkdir", "-p", root.stateDir]
+    onExited: function(code) { queueFile.reload() }
+  }
+  property string binShim: decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
+  Process {
+    id: ensureBinSymlink
+    command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + binShim + "\" \"$HOME/.local/bin/yfocus\""]
+  }
+  Process {
+    id: legacyMigrate
+    command: ["bash", "-c", "old=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue/queue.json\"; new=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus/queue.json\"; test -f \"$old\" && test ! -f \"$new\" && mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\" || true"]
+    onExited: function(code) { queueFile.reload() }
+  }
+  property string hostArch: ""
+  property string _archCand: ""
+  Process {
+    id: archProbe
+    command: ["uname", "-m"]
+    onExited: function(code) {
+      if (code !== 0) return
+      var arch = String(stdout).trim()
+      root.hostArch = arch
+      if (arch === "x86_64" || arch === "aarch64") {
+        root._archCand = decodeFileUrl(Qt.resolvedUrl("bin/yfocus-" + arch).toString())
+        archCheck.running = true
+      }
+    }
+  }
+  Process {
+    id: archCheck
+    command: ["test", "-x", root._archCand]
+    onExited: function(code) {
+      if (code === 0) root.executablePath = Quickshell.env("YFOCUS_BIN") || root._archCand
+    }
+  }
+
   Component.onCompleted: {
-    // YFOCUS_BIN overrides the bundled path; useful when running the
-    // plugin straight from a source checkout without a built binary.
     var bin = Quickshell.env("YFOCUS_BIN")
     if (!bin) {
-      var url = Qt.resolvedUrl("bin/yfocus").toString()
-      var path = url.replace(/^file:\/\//, "")
-      try { path = decodeURIComponent(path) } catch (e) {}
-      bin = path
+      bin = decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
     }
     root.executablePath = bin
+    ensureStateDir.running = true
+    ensureBinSymlink.running = true
+    legacyMigrate.running = true
+    archProbe.running = true
     queueFile.reload()
   }
 
@@ -203,7 +244,7 @@ Item {
     visible: root.opened
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
-    WlrLayershell.namespace: "omarchy-focus-queue"
+    WlrLayershell.namespace: "omarchy-yfocus"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     exclusionMode: ExclusionMode.Ignore

@@ -9,7 +9,7 @@ import "FocusModel.js" as Model
 // manage overlay. Reads queue.json via FileView watch; never writes.
 BarWidget {
   id: root
-  moduleName: "youn.focus-queue"
+  moduleName: "You-ne5.yfocus"
 
   property var state: Model.emptyQueue()
   readonly property var currentTask: Model.getCurrent(state)
@@ -35,25 +35,25 @@ BarWidget {
   function summonManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "summon",
-      "youn.focus-queue", JSON.stringify({ mode: "manage" })
+      "You-ne5.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function toggleManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "toggle",
-      "youn.focus-queue", JSON.stringify({ mode: "manage" })
+      "You-ne5.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function hideManage() {
-    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "youn.focus-queue"])
+    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "You-ne5.yfocus"])
   }
 
+  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/yfocus"
   FileView {
     id: queueFile
-    path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+    path: root.stateDir + "/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -87,14 +87,68 @@ BarWidget {
     }
   }
 
-  // Bundled CLI path, resolved once; falls back to PATH when missing.
+  function decodeFileUrl(url) {
+    var p = String(url).replace(/^file:\/\//, "")
+    try { return decodeURIComponent(p) } catch (e) { return p }
+  }
+  // Bundled CLI — YFOCUS_BIN → bin/yfocus-<arch> → bin/yfocus → PATH (like obsidian-daily-qs)
+  property string _binPath: ""
   function executablePath() {
     if (root._binPath) return root._binPath
-    var url = Qt.resolvedUrl("bin/yfocus").toString()
-    var p = url.replace(/^file:\/\//, "")
-    try { p = decodeURIComponent(p) } catch (e) {}
-    root._binPath = p
-    return p
+    var override = Quickshell.env("YFOCUS_BIN")
+    if (override) { root._binPath = override; return override }
+    if (root._archBundled && root._archBundled !== "") { root._binPath = root._archBundled; return root._archBundled }
+    var base = decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
+    root._binPath = base
+    return base
   }
-  property string _binPath: ""
+  // Ensure state dir and yfocus on PATH (fresh install)
+  Process {
+    id: ensureStateDir
+    command: ["mkdir", "-p", root.stateDir]
+    onExited: function(code) { queueFile.reload() }
+  }
+  property string binShim: decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
+  Process {
+    id: ensureBinSymlink
+    command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + binShim + "\" \"$HOME/.local/bin/yfocus\""]
+  }
+  // Migrate legacy state from yfocus-queue → yfocus (one-shot)
+  Process {
+    id: legacyMigrate
+    command: ["bash", "-c", "old=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue/queue.json\"; new=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus/queue.json\"; test -f \"$old\" && test ! -f \"$new\" && mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\" || true"]
+    onExited: function(code) { queueFile.reload() }
+  }
+  property string hostArch: ""
+  property string _archBundled: ""
+  property string _archCand: ""
+  Process {
+    id: archProbe
+    command: ["uname", "-m"]
+    onExited: function(code) {
+      if (code !== 0) return
+      var arch = String(stdout).trim()
+      root.hostArch = arch
+      if (arch === "x86_64" || arch === "aarch64") {
+        root._archCand = decodeFileUrl(Qt.resolvedUrl("bin/yfocus-" + arch).toString())
+        archCheck.running = true
+      }
+    }
+  }
+  Process {
+    id: archCheck
+    command: ["test", "-x", root._archCand]
+    onExited: function(code) {
+      if (code === 0) {
+        root._archBundled = root._archCand
+        if (!Quickshell.env("YFOCUS_BIN")) root._binPath = root._archCand
+      }
+    }
+  }
+  Component.onCompleted: {
+    ensureStateDir.running = true
+    ensureBinSymlink.running = true
+    legacyMigrate.running = true
+    archProbe.running = true
+  }
 }
