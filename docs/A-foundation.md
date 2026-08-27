@@ -86,7 +86,7 @@ SOFTWARE.
 ### 0.5 `README.md` skeleton
 
 ```markdown
-# youn.focus-queue
+# You-ne5.yfocus
 
 Always-visible focus chip + tiny task queue for the Omarchy bar.
 
@@ -104,9 +104,9 @@ appendices for implementation notes.
 
 ## Install (development)
 
-    ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
+    ln -s "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
     omarchy-shell shell rescanPlugins
-    omarchy plugin enable youn.focus-queue
+    omarchy plugin enable You-ne5.yfocus
     omarchy restart shell
     ./hooks/install.sh
 ```
@@ -136,10 +136,10 @@ only a placeholder label. The plugin passes `omarchy plugin validate`.
 ```json
 {
   "schemaVersion": 1,
-  "id": "youn.focus-queue",
-  "name": "Focus Queue",
+  "id": "You-ne5.yfocus",
+  "name": "yfocus",
   "version": "0.1.0",
-  "author": "youn",
+  "author": "You-ne5",
   "license": "MIT",
   "description": "Task Queue, allowing you to enqueue, jump, or pop tasks, constantly shows current task to improve focus.",
   "kinds": ["bar-widget", "overlay"],
@@ -149,7 +149,7 @@ only a placeholder label. The plugin passes `omarchy plugin validate`.
     "overlay": "FocusOverlay.qml"
   },
   "barWidget": {
-    "displayName": "Focus Queue",
+    "displayName": "yfocus",
     "description": "Shows the current task. Click to open the queue manager.",
     "category": "Productivity",
     "allowMultiple": false,
@@ -190,7 +190,7 @@ import qs.Commons
 
 BarWidget {
   id: root
-  moduleName: "youn.focus-queue"
+  moduleName: "You-ne5.yfocus"
 
   Text {
     anchors.centerIn: parent
@@ -235,7 +235,7 @@ Item {
     visible: root.opened
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
-    WlrLayershell.namespace: "omarchy-focus-queue"
+    WlrLayershell.namespace: "omarchy-yfocus"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     exclusionMode: ExclusionMode.Ignore
@@ -288,10 +288,10 @@ Item {
 ### 1.3 Symlink into the user plugins directory and validate
 
 ```bash
-ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
+ln -s "$PWD" "$HOME/.config/omarchy/plugins/You-ne5.yfocus"
 omarchy plugin validate ./yfocus
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.focus-queue
+omarchy plugin enable You-ne5.yfocus
 omarchy restart shell
 ```
 
@@ -304,17 +304,17 @@ Expected from `omarchy plugin validate`:
 Expected from `omarchy-shell shell listPlugins`:
 
 ```
-... contains an entry with id "youn.focus-queue", kinds ["bar-widget","overlay"] ...
+... contains an entry with id "You-ne5.yfocus", kinds ["bar-widget","overlay"] ...
 ```
 
 ### 1.4 Layer rule (Hyprland)
 
-Add `omarchy-focus-queue` to the namespace exclusion list so the overlay
+Add `omarchy-yfocus` to the namespace exclusion list so the overlay
 plays nicely with Hyprland animations. In
 `~/.config/hypr/apps/omarchy-shell.lua`:
 
 ```lua
-hl.layer_rule({ match = { namespace = "^(omarchy-menu|omarchy-image-selector|omarchy-emojis|omarchy-clipboard|omarchy-keyboard-panel|omarchy-focus-queue)$" }, no_anim = true, animation = "none" })
+hl.layer_rule({ match = { namespace = "^(omarchy-menu|omarchy-image-selector|omarchy-emojis|omarchy-clipboard|omarchy-keyboard-panel|omarchy-yfocus)$" }, no_anim = true, animation = "none" })
 ```
 
 Reload Hyprland:
@@ -327,13 +327,13 @@ hyprctl reload
 
 1. The bar should show a `focus.queue (bar placeholder)` chip somewhere in
    the center.
-2. `omarchy-shell shell toggle youn.focus-queue '{}'` should summon the dark
+2. `omarchy-shell shell toggle You-ne5.yfocus '{}'` should summon the dark
    scrim with the placeholder text.
 
 ### Done when
 
 - `omarchy plugin validate ./yfocus` exits 0.
-- `omarchy-shell shell listPlugins` lists `youn.focus-queue`.
+- `omarchy-shell shell listPlugins` lists `You-ne5.yfocus`.
 - The chip and overlay placeholders are visible.
 
 ---
