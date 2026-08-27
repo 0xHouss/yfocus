@@ -3,24 +3,25 @@ set -euo pipefail
 
 cd "$(dirname "$0")"
 
-# Compile to a single static binary. Bun's --compile emits a self-contained
-# ELF that does not require a bun runtime on the target.
-TARGET="${YFOCUS_TARGET:-bun-linux-x64}"
 OUT="${YFOCUS_OUT:-bin/yfocus}"
+PROFILE="${YFOCUS_PROFILE:-release}"
 
-if ! command -v bun >/dev/null 2>&1; then
-  echo "build.sh: bun is required (mise use -g bun@latest, pacman -S bun, or https://bun.sh)" >&2
+if ! command -v cargo >/dev/null 2>&1; then
+  echo "build.sh: cargo is required (https://rustup.rs)" >&2
   exit 1
 fi
 
+# Map PROFILE to cargo flag
+if [ "$PROFILE" = "release" ]; then
+  cargo build --release
+  BIN="target/release/yfocus"
+else
+  cargo build
+  BIN="target/debug/yfocus"
+fi
+
 mkdir -p "$(dirname "$OUT")"
-
-bun build \
-  --compile \
-  --target "$TARGET" \
-  --outfile "$OUT" \
-  ts/cli.ts
-
+cp "$BIN" "$OUT"
 chmod +x "$OUT"
 
 # Keep the symbol table (no strip) so marketplace reviewers can inspect

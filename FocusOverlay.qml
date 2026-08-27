@@ -184,17 +184,44 @@ Item {
     onFileChanged: reload()
   }
 
+  function decodeFileUrl(url) {
+    var p = String(url).replace(/^file:\/\//, "")
+    try { return decodeURIComponent(p) } catch (e) { return p }
+  }
+  // Arch-aware bundled binary, like obsidian-daily-qs: prefers
+  // bin/yfocus-<arch>, falls back to bin/yfocus shim, then to PATH.
+  property string hostArch: ""
+  property string _archCand: ""
+  Process {
+    id: archProbe
+    command: ["uname", "-m"]
+    onExited: function(code) {
+      if (code !== 0) return
+      var arch = String(stdout).trim()
+      root.hostArch = arch
+      if (arch === "x86_64" || arch === "aarch64") {
+        root._archCand = decodeFileUrl(Qt.resolvedUrl("bin/yfocus-" + arch).toString())
+        archCheck.running = true
+      }
+    }
+  }
+  Process {
+    id: archCheck
+    command: ["test", "-x", root._archCand]
+    onExited: function(code) {
+      if (code === 0) {
+        root.executablePath = Quickshell.env("YFOCUS_BIN") || root._archCand
+      }
+    }
+  }
+
   Component.onCompleted: {
-    // YFOCUS_BIN overrides the bundled path; useful when running the
-    // plugin straight from a source checkout without a built binary.
     var bin = Quickshell.env("YFOCUS_BIN")
     if (!bin) {
-      var url = Qt.resolvedUrl("bin/yfocus").toString()
-      var path = url.replace(/^file:\/\//, "")
-      try { path = decodeURIComponent(path) } catch (e) {}
-      bin = path
+      bin = decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
     }
     root.executablePath = bin
+    archProbe.running = true
     queueFile.reload()
   }
 

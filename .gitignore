@@ -1,6 +1,6 @@
 # build artifacts
-bin/yfocus
-bin/*.bun
+/target
+# bin/ is intentionally NOT ignored — `make bundle` commits musl ELFs for the marketplace
 
 # node
 node_modules/

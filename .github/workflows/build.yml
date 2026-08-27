@@ -1,0 +1,42 @@
+name: build
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build CLI
+        run: ./build.sh
+      - name: Run tests
+        run: cargo test
+      - name: Validate plugin
+        run: |
+          # omarchy validator not available in CI; at least check manifest parses
+          python3 -m json.tool manifest.json >/dev/null
+          test -x bin/yfocus
+          ./bin/yfocus --help | grep -q "yfocus — focus queue CLI"
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: yfocus
+          path: bin/yfocus
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: ./build.sh
+      - name: Attach binary to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: bin/yfocus

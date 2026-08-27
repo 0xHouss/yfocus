@@ -87,14 +87,57 @@ BarWidget {
     }
   }
 
-  // Bundled CLI path, resolved once; falls back to PATH when missing.
-  function executablePath() {
-    if (root._binPath) return root._binPath
-    var url = Qt.resolvedUrl("bin/yfocus").toString()
-    var p = url.replace(/^file:\/\//, "")
-    try { p = decodeURIComponent(p) } catch (e) {}
-    root._binPath = p
-    return p
+  // Bundled CLI path — prefers arch-specific musl binary, falls back to shim,
+  // then to `yfocus` on PATH (e.g. `cargo install`). No auto-build: the plugin
+  // bundles `bin/yfocus-<arch>` via `make bundle`; see obsidian-daily-qs.
+  function decodeFileUrl(url) {
+    var p = String(url).replace(/^file:\/\//, "")
+    try { return decodeURIComponent(p) } catch (e) { return p }
   }
   property string _binPath: ""
+  function executablePath() {
+    if (root._binPath) return root._binPath
+    // Prefer YFOCUS_BIN override, else bundled arch binary, else shim, else PATH
+    var override = Quickshell.env("YFOCUS_BIN")
+    if (override) { root._binPath = override; return override }
+    // Bundled binaries are resolved relative to this QML file's directory
+    var base = decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
+    // Arch-specific first (set by hostArch below), then shim
+    if (root._archBundled && root._archBundled !== "") {
+      root._binPath = root._archBundled
+      return root._binPath
+    }
+    root._binPath = base
+    return base
+  }
+  // Arch detection (once at startup) — mirrors obsidian-daily-qs
+  property string hostArch: ""
+  property string _archBundled: ""
+  property string _archCand: ""
+  Process {
+    id: archProbe
+    command: ["uname", "-m"]
+    onExited: function(code) {
+      if (code !== 0) return
+      var arch = String(stdout).trim()
+      root.hostArch = arch
+      if (arch === "x86_64" || arch === "aarch64") {
+        root._archCand = decodeFileUrl(Qt.resolvedUrl("bin/yfocus-" + arch).toString())
+        archCheck.running = true
+      }
+    }
+  }
+  Process {
+    id: archCheck
+    command: ["test", "-x", root._archCand]
+    onExited: function(code) {
+      if (code === 0) {
+        root._archBundled = root._archCand
+        if (!Quickshell.env("YFOCUS_BIN")) root._binPath = root._archCand
+      } else {
+        root._archBundled = ""
+      }
+    }
+  }
+  Component.onCompleted: archProbe.running = true
 }
