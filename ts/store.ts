@@ -76,6 +76,10 @@ async function lockIsStale(): Promise<boolean> {
 }
 
 async function acquireLock(): Promise<void> {
+  // mkdir(LOCK_DIR()) below is deliberately non-recursive -- EEXIST is the
+  // test-and-set. That means the state directory has to exist first, which
+  // it does not on a fresh install where nothing has read the queue yet.
+  await ensureDir(LOCK_DIR());
   const deadline = Date.now() + LOCK_TIMEOUT_MS;
   for (;;) {
     try {
