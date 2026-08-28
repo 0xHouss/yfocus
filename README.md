@@ -32,9 +32,9 @@ git clone <this-repo>
 cd yfocus
 ./build.sh
 
-ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.focus-queue"
+ln -s "$PWD" "$HOME/.config/omarchy/plugins/youn.yfocus"
 omarchy-shell shell rescanPlugins
-omarchy plugin enable youn.focus-queue
+omarchy plugin enable youn.yfocus
 ```
 
 Then wire the hotkeys:
@@ -46,20 +46,20 @@ Then wire the hotkeys:
 Or add them manually to `~/.config/hypr/bindings.lua`:
 
 ```lua
--- youn.focus-queue:start
+-- youn.yfocus:start
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"manage\"}'")
--- youn.focus-queue:end
+o.bind("SUPER + SHIFT + T", "yfocus jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "yfocus add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open yfocus", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
+-- youn.yfocus:end
 ```
 
 (`yfocus` must be on PATH — see `build.sh`.)
 
 ## Data
 
-Tasks live in `$XDG_STATE_HOME/omarchy/yfocus-queue/queue.json`
-(default `~/.local/state/omarchy/yfocus-queue/queue.json`). The CLI can drive
+Tasks live in `$XDG_STATE_HOME/omarchy/youn.yfocus/queue.json`
+(default `~/.local/state/omarchy/youn.yfocus/queue.json`). The CLI can drive
 the queue without any UI:
 
 ```bash

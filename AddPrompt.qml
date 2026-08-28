@@ -67,7 +67,7 @@ Item {
         text: "Adds to the end of the queue. If nothing is current, it starts right away."
         color: Qt.darker(root.foreground, 1.4)
         font.family: root.fontFamily
-        font.pixelSize: Style.font.caption
+        font.pixelSize: Style.font.body
         wrapMode: Text.WordWrap
         Layout.fillWidth: true
       }

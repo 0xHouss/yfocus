@@ -5,22 +5,30 @@ import qs.Commons
 import qs.Ui
 import "FocusModel.js" as Model
 
+
+
 // Bar chip: shows the task you are currently working on. Click opens the
 // manage overlay. Reads queue.json via FileView watch; never writes.
 BarWidget {
+  
   id: root
-  moduleName: "youn.focus-queue"
+  moduleName: "youn.yfocus"
 
   property var state: Model.emptyQueue()
   readonly property var currentTask: Model.getCurrent(state)
   readonly property bool hasTask: !!currentTask
-
+  readonly property int textLimit: 60
+  
   function loadState(raw) {
     try {
       var parsed = JSON.parse(String(raw || ""))
       if (parsed && parsed.version === 1 && Array.isArray(parsed.tasks)) return parsed
     } catch (e) {}
     return Model.emptyQueue()
+  }
+
+  function truncate(text) {
+    return text.length > root.textLimit ? text.slice(0, root.textLimit-3) + "..." : text;
   }
 
   // Shape contract for shell.summon/hide/toggle routing: Bar.findPanelWidget
@@ -35,25 +43,25 @@ BarWidget {
   function summonManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "summon",
-      "youn.focus-queue", JSON.stringify({ mode: "manage" })
+      "youn.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function toggleManage() {
     Quickshell.execDetached([
       "omarchy-shell", "shell", "toggle",
-      "youn.focus-queue", JSON.stringify({ mode: "manage" })
+      "youn.yfocus", JSON.stringify({ mode: "manage" })
     ])
   }
 
   function hideManage() {
-    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "youn.focus-queue"])
+    Quickshell.execDetached(["omarchy-shell", "shell", "hide", "youn.yfocus"])
   }
 
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+          + "/omarchy/youn.yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -71,8 +79,8 @@ BarWidget {
     bar: root.bar
     text: {
       if (root.vertical) return root.hasTask ? "▸" : ""
-      if (root.hasTask) return "▸ " + root.currentTask.title
-      return setting("idleLabel", "▸ focus")
+      if (root.hasTask) return "▸ " + truncate(root.currentTask.title)
+      return setting("idleLabel", "▸ yfocus")
     }
     tooltipText: root.hasTask ? root.currentTask.title : ""
     dimmed: !root.hasTask

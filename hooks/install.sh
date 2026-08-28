@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# youn.focus-queue — Hyprland keybinding installer.
+# youn.yfocus — Hyprland keybinding installer.
 #
 # Maintains a delimited block in the user's bindings.lua (Omarchy Lua
 # config convention) and rewrites it in place on every run, so binding
@@ -11,16 +11,16 @@ set -euo pipefail
 BINDINGS_FILE="${HOME}/.config/hypr/bindings.lua"
 
 BLOCK_BODY=$(cat << 'EOF'
--- youn.focus-queue:start
+-- youn.yfocus:start
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle youn.focus-queue '{\"mode\":\"manage\"}'")
--- youn.focus-queue:end
+o.bind("SUPER + SHIFT + T", "yfocus jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "yfocus add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open yfocus", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
+-- youn.yfocus:end
 EOF
 )
 
-echo "Configuring Hyprland bindings for youn.focus-queue..."
+echo "Configuring Hyprland bindings for youn.yfocus..."
 mkdir -p "$(dirname "$BINDINGS_FILE")"
 touch "$BINDINGS_FILE"
 
@@ -32,7 +32,7 @@ if command -v hyprctl >/dev/null 2>&1 && hyprctl binds -j >/dev/null 2>&1; then
     .[] | select((.modmask | tostring) == "64" and ((.key | ascii_downcase) == "e")) | .description' \
     | grep -v '^Pop current focus task$' | head -1 || true)
   if [ -n "${OWNER_DESC}" ]; then
-    PRELUDE="-- Displaced by youn.focus-queue: SUPER+E was bound to '${OWNER_DESC}'"
+    PRELUDE="-- Displaced by youn.yfocus: SUPER+E was bound to '${OWNER_DESC}'"
     PRELUDE="${PRELUDE}
 hl.unbind(\"SUPER + E\")"
     echo "Note: SUPER+E currently bound to '${OWNER_DESC}'; will hl.unbind it."
@@ -44,7 +44,7 @@ fi
 # unmarked lines from older installers); keep everything else verbatim.
 
 TEMP_BASE="$(mktemp)"
-grep -vE 'youn\.focus-queue(:start|:end)?|yfocus' "$BINDINGS_FILE" > "$TEMP_BASE" || true
+grep -vE 'youn\.yfocus(:start|:end)?|yfocus' "$BINDINGS_FILE" > "$TEMP_BASE" || true
 
 TEMP_OUT="$(mktemp)"
 {
@@ -79,7 +79,7 @@ if command -v hyprctl >/dev/null 2>&1; then
   hyprctl reload || true
 fi
 
-echo "youn.focus-queue hotkeys installed:"
+echo "youn.yfocus hotkeys installed:"
 echo "  SUPER+E          pop (complete current)"
 echo "  SUPER+SHIFT+T    jump (insert at top)"
 echo "  SUPER+ALT+T      add (append to queue)"

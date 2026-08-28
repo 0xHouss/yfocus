@@ -11,7 +11,7 @@ import {
 } from "./queue.ts";
 import { mutate, queuePath, readQueue, writeQueue } from "./store.ts";
 
-const HELP = `yfocus — focus queue CLI
+const HELP = `yfocus — yfocus CLI
 
 Usage:
   yfocus show                          Print the queue as JSON

@@ -6,7 +6,7 @@ import { dirname } from "node:path";
 export function queuePath(): string {
   const base =
     process.env.XDG_STATE_HOME ?? `${process.env.HOME}/.local/state`;
-  return `${base}/omarchy/yfocus-queue/queue.json`;
+  return `${base}/omarchy/youn.yfocus/queue.json`;
 }
 
 async function ensureDir(path: string): Promise<void> {

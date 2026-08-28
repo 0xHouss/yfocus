@@ -8,7 +8,7 @@ import qs.Commons
 import qs.Ui
 import "FocusModel.js" as Model
 
-// Focus queue overlay. One layer-shell window serves all three modes via
+// yfocus overlay. One layer-shell window serves all three modes via
 // the summon payload:
 //   {"mode":"manage"} (default) -> FocusManageView
 //   {"mode":"jump"}             -> JumpPrompt  (insert at top, becomes current)
@@ -175,7 +175,7 @@ Item {
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus-queue/queue.json"
+          + "/omarchy/youn.yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false
@@ -203,7 +203,7 @@ Item {
     visible: root.opened
     anchors { top: true; bottom: true; left: true; right: true }
     color: "transparent"
-    WlrLayershell.namespace: "omarchy-focus-queue"
+    WlrLayershell.namespace: "omarchy-yfocus"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     exclusionMode: ExclusionMode.Ignore
