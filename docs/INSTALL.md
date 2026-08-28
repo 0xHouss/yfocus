@@ -178,7 +178,7 @@ Environment variables:
 
 | Variable | Purpose |
 |---|---|
-| `XDG_STATE_HOME` | Data root; defaults to `~/.local/state`. Queue lives at `$XDG_STATE_HOME/omarchy/yfocus/queue.json`. |
+| `XDG_STATE_HOME` | Data root; defaults to `~/.local/state`. Queue lives at `$XDG_STATE_HOME/omarchy/You-ne5.yfocus/queue.json`. |
 | `YFOCUS_BIN` | Overrides the bundled `bin/yfocus` path. Set it when running without a built binary (e.g. `YFOCUS_BIN=/path/to/yfocus`). |
 
 Writes are serialized with a lock directory and committed via

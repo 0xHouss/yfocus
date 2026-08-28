@@ -6,33 +6,42 @@ import { dirname } from "node:path";
 export function queuePath(): string {
   const base =
     process.env.XDG_STATE_HOME ?? `${process.env.HOME}/.local/state`;
-  return `${base}/omarchy/yfocus/queue.json`;
+  return `${base}/omarchy/You-ne5.yfocus/queue.json`;
 }
 
-export function legacyQueuePath(): string {
+/**
+ * Queue locations used by earlier releases, newest first. Read once on
+ * first access so an upgrade does not look like an empty queue.
+ */
+export function legacyQueuePaths(): string[] {
   const base =
     process.env.XDG_STATE_HOME ?? `${process.env.HOME}/.local/state`;
-  return `${base}/omarchy/yfocus-queue/queue.json`;
+  return [
+    `${base}/omarchy/yfocus/queue.json`,
+    `${base}/omarchy/yfocus-queue/queue.json`,
+  ];
 }
 
 async function maybeMigrateLegacy(): Promise<void> {
   const { copyFile, stat: stat2 } = await import("node:fs/promises");
   const newPath = queuePath();
-  const oldPath = legacyQueuePath();
-  if (newPath === oldPath) return;
   try {
     await stat2(newPath);
     return; // new exists
   } catch {}
-  try {
-    await stat2(oldPath);
-  } catch {
-    return; // old missing
+  for (const oldPath of legacyQueuePaths()) {
+    if (oldPath === newPath) continue;
+    try {
+      await stat2(oldPath);
+    } catch {
+      continue; // old missing
+    }
+    await ensureDir(newPath);
+    try {
+      await copyFile(oldPath, newPath);
+    } catch {}
+    return;
   }
-  await ensureDir(newPath);
-  try {
-    await copyFile(oldPath, newPath);
-  } catch {}
 }
 
 async function ensureDir(path: string): Promise<void> {

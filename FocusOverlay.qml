@@ -8,7 +8,7 @@ import qs.Commons
 import qs.Ui
 import "FocusModel.js" as Model
 
-// Focus queue overlay. One layer-shell window serves all three modes via
+// yfocus overlay. One layer-shell window serves all three modes via
 // the summon payload:
 //   {"mode":"manage"} (default) -> FocusManageView
 //   {"mode":"jump"}             -> JumpPrompt  (insert at top, becomes current)
@@ -172,7 +172,7 @@ Item {
     }
   }
 
-  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/yfocus"
+  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/You-ne5.yfocus"
   FileView {
     id: queueFile
     path: root.stateDir + "/queue.json"
@@ -198,9 +198,10 @@ Item {
     id: ensureBinSymlink
     command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + binShim + "\" \"$HOME/.local/bin/yfocus\""]
   }
+  // Migrate legacy state (yfocus-queue, yfocus) → You-ne5.yfocus (one-shot)
   Process {
     id: legacyMigrate
-    command: ["bash", "-c", "old=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue/queue.json\"; new=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus/queue.json\"; test -f \"$old\" && test ! -f \"$new\" && mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\" || true"]
+    command: ["bash", "-c", "base=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy\"; new=\"$base/You-ne5.yfocus/queue.json\"; if [ ! -f \"$new\" ]; then for old in \"$base/yfocus/queue.json\" \"$base/yfocus-queue/queue.json\"; do if [ -f \"$old\" ]; then mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\"; break; fi; done; fi; true"]
     onExited: function(code) { queueFile.reload() }
   }
   property string hostArch: ""

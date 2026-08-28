@@ -83,8 +83,8 @@ list to add `omarchy-yfocus`.
 
 ## 3. Data model
 
-Stored at `$XDG_STATE_HOME/omarchy/yfocus/queue.json`
-(default `~/.local/state/omarchy/yfocus/queue.json`).
+Stored at `$XDG_STATE_HOME/omarchy/You-ne5.yfocus/queue.json`
+(default `~/.local/state/omarchy/You-ne5.yfocus/queue.json`).
 
 ```json
 {

@@ -10,7 +10,7 @@ Omarchy Quattro bar widget for a focused task queue: always shows your current t
 - A supported architecture: `x86_64` or `aarch64` (`arm64`) — other archs show `⚠ arch`
 - CLI via bundled `bin/yfocus` or `YFOCUS_BIN` override (no extra env needed for the bar)
 
-Tasks live in `$XDG_STATE_HOME/omarchy/yfocus/queue.json` (`~/.local/state/omarchy/yfocus/queue.json`).
+Tasks live in `$XDG_STATE_HOME/omarchy/You-ne5.yfocus/queue.json` (`~/.local/state/omarchy/You-ne5.yfocus/queue.json`).
 
 ## Architecture
 
@@ -21,6 +21,21 @@ Tasks live in `$XDG_STATE_HOME/omarchy/yfocus/queue.json` (`~/.local/state/omarc
 yfocus watch (FileView) ──(queue.json)──▶ BarWidget ─▶ FocusOverlay
 yfocus jump/add/pop ──(queue.json)──▶ BarWidget
 ```
+
+
+## screenshots
+### Current task widget
+<img width="600" height="116" alt="image" src="https://github.com/user-attachments/assets/ac573c53-7e6a-4e18-9261-212f177787da" />
+
+### Main menu
+<img width="900" height="540" alt="image" src="https://github.com/user-attachments/assets/4d777d67-91de-498d-8d02-2e24c8129ccc" />
+
+### Enqueue menu
+<img width="900" height="540" alt="image" src="https://github.com/user-attachments/assets/ecb3bdd0-631f-47fc-9307-60fc1801b5c1" />
+
+### Jump menu
+<img width="900" height="540" alt="image" src="https://github.com/user-attachments/assets/ed33853d-1b88-4f00-aa08-b0654363de54" />
+
 
 ## Install
 
@@ -55,9 +70,9 @@ Hotkeys are **opt-in** — no installer touches `bindings.lua`. Add manually to 
 
 ```lua
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "Focus queue jump", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "Focus queue add", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open focus queue", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"manage\"}'")
+o.bind("SUPER + SHIFT + T", "yfocus jump", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "yfocus add", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open yfocus", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"manage\"}'")
 ```
 
 ## CLI

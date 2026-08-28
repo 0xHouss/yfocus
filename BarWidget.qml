@@ -5,22 +5,30 @@ import qs.Commons
 import qs.Ui
 import "FocusModel.js" as Model
 
+
+
 // Bar chip: shows the task you are currently working on. Click opens the
 // manage overlay. Reads queue.json via FileView watch; never writes.
 BarWidget {
+  
   id: root
   moduleName: "You-ne5.yfocus"
 
   property var state: Model.emptyQueue()
   readonly property var currentTask: Model.getCurrent(state)
   readonly property bool hasTask: !!currentTask
-
+  readonly property int textLimit: 60
+  
   function loadState(raw) {
     try {
       var parsed = JSON.parse(String(raw || ""))
       if (parsed && parsed.version === 1 && Array.isArray(parsed.tasks)) return parsed
     } catch (e) {}
     return Model.emptyQueue()
+  }
+
+  function truncate(text) {
+    return text.length > root.textLimit ? text.slice(0, root.textLimit-3) + "..." : text;
   }
 
   // Shape contract for shell.summon/hide/toggle routing: Bar.findPanelWidget
@@ -50,7 +58,7 @@ BarWidget {
     Quickshell.execDetached(["omarchy-shell", "shell", "hide", "You-ne5.yfocus"])
   }
 
-  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/yfocus"
+  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/You-ne5.yfocus"
   FileView {
     id: queueFile
     path: root.stateDir + "/queue.json"
@@ -71,8 +79,8 @@ BarWidget {
     bar: root.bar
     text: {
       if (root.vertical) return root.hasTask ? "▸" : ""
-      if (root.hasTask) return "▸ " + root.currentTask.title
-      return setting("idleLabel", "▸ focus")
+      if (root.hasTask) return "▸ " + truncate(root.currentTask.title)
+      return setting("idleLabel", "▸ yfocus")
     }
     tooltipText: root.hasTask ? root.currentTask.title : ""
     dimmed: !root.hasTask
@@ -113,10 +121,10 @@ BarWidget {
     id: ensureBinSymlink
     command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + binShim + "\" \"$HOME/.local/bin/yfocus\""]
   }
-  // Migrate legacy state from yfocus-queue → yfocus (one-shot)
+  // Migrate legacy state (yfocus-queue, yfocus) → You-ne5.yfocus (one-shot)
   Process {
     id: legacyMigrate
-    command: ["bash", "-c", "old=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus-queue/queue.json\"; new=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/yfocus/queue.json\"; test -f \"$old\" && test ! -f \"$new\" && mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\" || true"]
+    command: ["bash", "-c", "base=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy\"; new=\"$base/You-ne5.yfocus/queue.json\"; if [ ! -f \"$new\" ]; then for old in \"$base/yfocus/queue.json\" \"$base/yfocus-queue/queue.json\"; do if [ -f \"$old\" ]; then mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\"; break; fi; done; fi; true"]
     onExited: function(code) { queueFile.reload() }
   }
   property string hostArch: ""

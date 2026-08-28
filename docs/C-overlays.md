@@ -713,7 +713,7 @@ Item {
   FileView {
     id: queueFile
     path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state")
-          + "/omarchy/yfocus/queue.json"
+          + "/omarchy/You-ne5.yfocus/queue.json"
     watchChanges: true
     atomicWrites: true
     printErrors: false

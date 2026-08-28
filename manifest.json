@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "You-ne5.yfocus",
-  "name": "yfocus",
+  "name": "yFocus",
   "version": "0.1.0",
   "author": "You-ne5",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "overlay": "FocusOverlay.qml"
   },
   "barWidget": {
-    "displayName": "yfocus",
+    "displayName": "yFocus",
     "description": "Shows the task you are currently working on. Click to open the queue manager.",
     "category": "Productivity",
     "allowMultiple": false,
