@@ -20,6 +20,21 @@ Clicking the bar chip also opens the manager.
   queue, or only completed tasks left), it becomes current right away.
 - **pop** — mark the current task done and promote the next queued task.
 
+
+## screenshots
+### Current task widget
+<img width="600" height="116" alt="image" src="https://github.com/user-attachments/assets/ac573c53-7e6a-4e18-9261-212f177787da" />
+
+### Main menu
+<img width="900" height="540" alt="image" src="https://github.com/user-attachments/assets/4d777d67-91de-498d-8d02-2e24c8129ccc" />
+
+### Enqueue menu
+<img width="900" height="540" alt="image" src="https://github.com/user-attachments/assets/ecb3bdd0-631f-47fc-9307-60fc1801b5c1" />
+
+### Jump menu
+<img width="900" height="540" alt="image" src="https://github.com/user-attachments/assets/ed33853d-1b88-4f00-aa08-b0654363de54" />
+
+
 ## Install
 
 Full install, configuration (keybindings, bar settings, CLI) and deployment
