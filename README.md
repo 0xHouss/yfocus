@@ -7,15 +7,15 @@ Omarchy Quattro bar widget for a focused task queue: always shows your current t
 ## Requirements
 
 - Omarchy Quattro (Quickshell-based shell) on Linux
-- A supported architecture: `x86_64` or `aarch64` (`arm64`) — other archs show `⚠ arch`
+- `x86_64` — the bundled binary is x86_64 only; on other architectures build from source (`./build.sh`) or point `YFOCUS_BIN` at your own build
 - CLI via bundled `bin/yfocus` or `YFOCUS_BIN` override (no extra env needed for the bar)
 
 Tasks live in `$XDG_STATE_HOME/omarchy/youn.yfocus/queue.json` (`~/.local/state/omarchy/youn.yfocus/queue.json`).
 
 ## Architecture
 
-- **TS backend** (`yfocus`): `ts/cli.ts` → `bin/yfocus` via `bun build --compile --target bun-linux-x64` (static ELF, `~80 MB`). `ts/store.ts` handles `XDG_STATE_HOME`, lock, atomic write; `ts/queue.ts` is the queue logic. Released as `bin/yfocus-x86_64` / `-aarch64` + `bin/yfocus` shim.
-- **QML frontend** (`BarWidget.qml` / `FocusOverlay.qml`): `bar-widget` chip + `overlay` manager. Architecture detection via `uname -m` picks the bundled ELF; falls back to `yfocus` on `PATH`/`YFOCUS_BIN`.
+- **TS backend** (`yfocus`): `ts/cli.ts` → `bin/yfocus` via `bun build --compile --target bun-linux-x64` (static ELF, `~80 MB`). `ts/store.ts` handles `XDG_STATE_HOME`, lock, atomic write; `ts/queue.ts` is the queue logic. Committed as a single `bin/yfocus`.
+- **QML frontend** (`BarWidget.qml` / `FocusOverlay.qml`): `bar-widget` chip + `overlay` manager. Runs the bundled `bin/yfocus`; falls back to `yfocus` on `PATH`/`YFOCUS_BIN`.
 
 ```
 yfocus watch (FileView) ──(queue.json)──▶ BarWidget ─▶ FocusOverlay
@@ -52,7 +52,7 @@ omarchy plugin remove youn.yfocus
 
 If the bar still shows an error right after an update, run `omarchy restart shell` once. Omarchy hot-reloads QML in place; a full restart drops a stale widget.
 
-The plugin bundles `bin/yfocus-x86_64` / `bin/yfocus-aarch64` and a `bin/yfocus` shim that `exec`s the matching arch (so a hot-reloaded pre-bundle widget keeps working). The widget prefers the arch-specific ELF via `uname -m`. If that cannot start, it tries `yfocus` on `PATH` (`YFOCUS_BIN` override, or `make install` / `ln -sf bin/yfocus ~/.local/bin/yfocus`); if both fail, mutations stay in-memory until a binary is available. On unsupported arch the bar shows `⚠ arch`.
+The plugin bundles a single `bin/yfocus` (x86_64 static ELF). If it cannot start, the widget tries `yfocus` on `PATH` (`YFOCUS_BIN` override, or `make install` / `ln -sf bin/yfocus ~/.local/bin/yfocus`); if both fail, mutations stay in-memory until a binary is available.
 
 ## Usage
 
@@ -99,16 +99,15 @@ yfocus path
 bun test                          # ts/queue.test.ts + FocusModel.js parity
 omarchy plugin validate .
 qmllint -I "$OMARCHY_PATH/shell" BarWidget.qml FocusOverlay.qml
-./build.sh                        # dev: bun-linux-x64 → bin/yfocus
-make bundle && make verify-bundle # reproducible x86_64 + aarch64 bundle gate
+./build.sh                        # bun-linux-x64 → bin/yfocus
 ```
 
-Any edit under `ts/`, `manifest.json` or `build.sh` requires a fresh `make bundle` in the same change.
+Any edit under `ts/` or `build.sh` requires a fresh `./build.sh` in the same change, since `bin/yfocus` is committed.
 
 ### Releasing
 
 1. Bump `manifest.json` version and `CHANGELOG.md`.
-2. Run `make bundle && make verify-bundle` on Linux.
+2. Run `./build.sh` on Linux and commit the refreshed `bin/yfocus`.
 3. Open a PR; wait for CI `build` to be green.
 4. Merge, then tag `vX.Y.Z` matching `manifest.json`.
 

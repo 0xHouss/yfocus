@@ -14,17 +14,17 @@ if [[ "${1:-}" == "--apply" || "${1:-}" == "--yes" ]]; then
 fi
 
 # --- auto-build CLI if missing -------------------------------------------
-if [ ! -x "$REPO_ROOT/bin/yfocus" ] && [ ! -x "$REPO_ROOT/bin/yfocus-x86_64" ] && [ ! -x "$REPO_ROOT/bin/yfocus-aarch64" ]; then
-  if command -v cargo >/dev/null 2>&1; then
+if [ ! -x "$REPO_ROOT/bin/yfocus" ]; then
+  if command -v bun >/dev/null 2>&1; then
     echo "Building yfocus (no bundled binary found)..."
-    (cd "$REPO_ROOT" && ./build.sh) || echo "Warning: build failed — try: cargo build --release"
+    (cd "$REPO_ROOT" && ./build.sh) || echo "Warning: build failed — try: ./build.sh"
   else
-    echo "Note: no bundled binary and cargo not found."
-    echo "  On the plugin host: 'cargo build --release' or download a release artifact."
+    echo "Note: no bundled binary and bun not found."
+    echo "  On the plugin host: install bun (https://bun.sh) and run ./build.sh."
     echo "  Or set YFOCUS_BIN to a yfocus on PATH."
   fi
 else
-  echo "Bundled binary present: $REPO_ROOT/bin/yfocus*"
+  echo "Bundled binary present: $REPO_ROOT/bin/yfocus"
 fi
 
 # --- hotkey instructions ---------------------------------------------------
@@ -65,5 +65,5 @@ else
 fi
 
 echo ""
-echo "yfocus CLI: prefer bundled bin/yfocus-<arch> (resolved by the plugin). For 'yfocus pop' on PATH:"
+echo "yfocus CLI: the plugin uses the bundled bin/yfocus. For 'yfocus pop' on PATH:"
 echo "  ln -sf \"\$HOME/.config/omarchy/plugins/youn.yfocus/bin/yfocus\" \"\$HOME/.local/bin/yfocus\"  # optional, manual"

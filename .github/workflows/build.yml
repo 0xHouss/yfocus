@@ -9,4 +9,3 @@ jobs:
       - run: if [ -f package.json ] || [ -f bun.lockb ]; then bun install --frozen-lockfile 2>/dev/null || bun install; else echo "no package.json, skipping bun install"; fi
       - run: bun test
       - run: ./build.sh && ./bin/yfocus --help | grep -q "yfocus"
-      - run: scripts/verify-bundle.sh || echo "verify skipped (no bundle yet)"

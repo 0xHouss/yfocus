@@ -99,13 +99,12 @@ BarWidget {
     var p = String(url).replace(/^file:\/\//, "")
     try { return decodeURIComponent(p) } catch (e) { return p }
   }
-  // Bundled CLI — YFOCUS_BIN → bin/yfocus-<arch> → bin/yfocus → PATH (like obsidian-daily-qs)
+  // Bundled CLI — YFOCUS_BIN → bin/yfocus → PATH (like obsidian-daily-qs)
   property string _binPath: ""
   function executablePath() {
     if (root._binPath) return root._binPath
     var override = Quickshell.env("YFOCUS_BIN")
     if (override) { root._binPath = override; return override }
-    if (root._archBundled && root._archBundled !== "") { root._binPath = root._archBundled; return root._archBundled }
     var base = decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
     root._binPath = base
     return base
@@ -116,10 +115,10 @@ BarWidget {
     command: ["mkdir", "-p", root.stateDir]
     onExited: function(code) { queueFile.reload() }
   }
-  property string binShim: decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
+  property string bundledBin: decodeFileUrl(Qt.resolvedUrl("bin/yfocus").toString())
   Process {
     id: ensureBinSymlink
-    command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + binShim + "\" \"$HOME/.local/bin/yfocus\""]
+    command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + bundledBin + "\" \"$HOME/.local/bin/yfocus\""]
   }
   // Migrate legacy state (yfocus-queue, yfocus) → youn.yfocus (one-shot)
   Process {
@@ -127,36 +126,9 @@ BarWidget {
     command: ["bash", "-c", "base=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy\"; new=\"$base/youn.yfocus/queue.json\"; if [ ! -f \"$new\" ]; then for old in \"$base/yfocus/queue.json\" \"$base/yfocus-queue/queue.json\"; do if [ -f \"$old\" ]; then mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\"; break; fi; done; fi; true"]
     onExited: function(code) { queueFile.reload() }
   }
-  property string hostArch: ""
-  property string _archBundled: ""
-  property string _archCand: ""
-  Process {
-    id: archProbe
-    command: ["uname", "-m"]
-    onExited: function(code) {
-      if (code !== 0) return
-      var arch = String(stdout).trim()
-      root.hostArch = arch
-      if (arch === "x86_64" || arch === "aarch64") {
-        root._archCand = decodeFileUrl(Qt.resolvedUrl("bin/yfocus-" + arch).toString())
-        archCheck.running = true
-      }
-    }
-  }
-  Process {
-    id: archCheck
-    command: ["test", "-x", root._archCand]
-    onExited: function(code) {
-      if (code === 0) {
-        root._archBundled = root._archCand
-        if (!Quickshell.env("YFOCUS_BIN")) root._binPath = root._archCand
-      }
-    }
-  }
   Component.onCompleted: {
     ensureStateDir.running = true
     ensureBinSymlink.running = true
     legacyMigrate.running = true
-    archProbe.running = true
   }
 }
