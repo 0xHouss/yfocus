@@ -6,7 +6,7 @@ import { dirname } from "node:path";
 export function queuePath(): string {
   const base =
     process.env.XDG_STATE_HOME ?? `${process.env.HOME}/.local/state`;
-  return `${base}/omarchy/You-ne5.yfocus/queue.json`;
+  return `${base}/omarchy/youn.yfocus/queue.json`;
 }
 
 /**

@@ -55,7 +55,7 @@ describe("legacy migration", () => {
       await writeFile(join(home, "omarchy", legacy, "queue.json"), JSON.stringify(seeded));
 
       expect(await readQueue()).toEqual(seeded);
-      expect(queuePath()).toBe(join(home, "omarchy", "You-ne5.yfocus", "queue.json"));
+      expect(queuePath()).toBe(join(home, "omarchy", "youn.yfocus", "queue.json"));
     });
   }
 
@@ -63,7 +63,7 @@ describe("legacy migration", () => {
     const home = await freshStateHome();
     await mkdir(join(home, "omarchy", "yfocus"), { recursive: true });
     await writeFile(join(home, "omarchy", "yfocus", "queue.json"), JSON.stringify(seeded));
-    await mkdir(join(home, "omarchy", "You-ne5.yfocus"), { recursive: true });
+    await mkdir(join(home, "omarchy", "youn.yfocus"), { recursive: true });
     await writeFile(queuePath(), JSON.stringify({ version: 1, current: null, tasks: [] }));
 
     expect((await readQueue()).tasks).toHaveLength(0);

@@ -172,7 +172,7 @@ Item {
     }
   }
 
-  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/You-ne5.yfocus"
+  property string stateDir: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/omarchy/youn.yfocus"
   FileView {
     id: queueFile
     path: root.stateDir + "/queue.json"
@@ -198,10 +198,10 @@ Item {
     id: ensureBinSymlink
     command: ["bash", "-c", "mkdir -p \"$HOME/.local/bin\" && ln -sf \"" + binShim + "\" \"$HOME/.local/bin/yfocus\""]
   }
-  // Migrate legacy state (yfocus-queue, yfocus) → You-ne5.yfocus (one-shot)
+  // Migrate legacy state (yfocus-queue, yfocus) → youn.yfocus (one-shot)
   Process {
     id: legacyMigrate
-    command: ["bash", "-c", "base=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy\"; new=\"$base/You-ne5.yfocus/queue.json\"; if [ ! -f \"$new\" ]; then for old in \"$base/yfocus/queue.json\" \"$base/yfocus-queue/queue.json\"; do if [ -f \"$old\" ]; then mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\"; break; fi; done; fi; true"]
+    command: ["bash", "-c", "base=\"${XDG_STATE_HOME:-$HOME/.local/state}/omarchy\"; new=\"$base/youn.yfocus/queue.json\"; if [ ! -f \"$new\" ]; then for old in \"$base/yfocus/queue.json\" \"$base/yfocus-queue/queue.json\"; do if [ -f \"$old\" ]; then mkdir -p \"$(dirname \"$new\")\" && cp \"$old\" \"$new\"; break; fi; done; fi; true"]
     onExited: function(code) { queueFile.reload() }
   }
   property string hostArch: ""

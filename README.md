@@ -1,6 +1,6 @@
 # yfocus
 
-[![Omarchy marketplace](https://img.shields.io/badge/Omarchy-marketplace-teal)](https://omarchyplugins.com/plugin.html?id=You-ne5.yfocus)
+[![Omarchy marketplace](https://img.shields.io/badge/Omarchy-marketplace-teal)](https://omarchyplugins.com/plugin.html?id=youn.yfocus)
 
 Omarchy Quattro bar widget for a focused task queue: always shows your current task, jump (insert at top), add (append), or pop (complete + promote next) from the bar.
 
@@ -10,7 +10,7 @@ Omarchy Quattro bar widget for a focused task queue: always shows your current t
 - A supported architecture: `x86_64` or `aarch64` (`arm64`) — other archs show `⚠ arch`
 - CLI via bundled `bin/yfocus` or `YFOCUS_BIN` override (no extra env needed for the bar)
 
-Tasks live in `$XDG_STATE_HOME/omarchy/You-ne5.yfocus/queue.json` (`~/.local/state/omarchy/You-ne5.yfocus/queue.json`).
+Tasks live in `$XDG_STATE_HOME/omarchy/youn.yfocus/queue.json` (`~/.local/state/omarchy/youn.yfocus/queue.json`).
 
 ## Architecture
 
@@ -46,8 +46,8 @@ omarchy plugin add https://github.com/You-ne5/yfocus.git --enable
 Update / remove:
 
 ```bash
-omarchy plugin update You-ne5.yfocus
-omarchy plugin remove You-ne5.yfocus
+omarchy plugin update youn.yfocus
+omarchy plugin remove youn.yfocus
 ```
 
 If the bar still shows an error right after an update, run `omarchy restart shell` once. Omarchy hot-reloads QML in place; a full restart drops a stale widget.
@@ -57,22 +57,22 @@ The plugin bundles `bin/yfocus-x86_64` / `bin/yfocus-aarch64` and a `bin/yfocus`
 ## Usage
 
 - **Bar**: `▸ <current>` or `idleLabel` (`▸ focus`). Click → manager; right-click → `pop` (complete current).
-- **Overlay** (`SUPER+CTRL+T` or bar click, `jump`/`add` modes via `omarchy-shell shell toggle You-ne5.yfocus '{"mode":"…"}'`):
+- **Overlay** (`SUPER+CTRL+T` or bar click, `jump`/`add` modes via `omarchy-shell shell toggle youn.yfocus '{"mode":"…"}'`):
   - `p` pop, `n` add, `↑`/`↓` select, `Ctrl+↑`/`↓` reorder, `Space` promote, `d` delete, `Shift+D` clear completed, `s` toggle completed, `Esc` close. Jump/add prompts: `Enter` submit, `Esc` cancel.
 - **Vocabulary**: `jump` insert at 0 (previous current → 1), `add` append (becomes current if no current), `pop` mark done + promote next.
-- **Settings** (`omarchy bar set You-ne5.yfocus …`): `idleLabel`.
+- **Settings** (`omarchy bar set youn.yfocus …`): `idleLabel`.
 
 ```bash
-omarchy bar set You-ne5.yfocus idleLabel '▸ focus'
+omarchy bar set youn.yfocus idleLabel '▸ focus'
 ```
 
 Hotkeys are **opt-in** — no installer touches `bindings.lua`. Add manually to `~/.config/hypr/apps/yfocus.conf` or `bindings.lua`, or run `hooks/install.sh --apply` (creates `apps/yfocus.conf`):
 
 ```lua
 o.bind("SUPER + E", "Pop current focus task", "yfocus pop")
-o.bind("SUPER + SHIFT + T", "yfocus jump", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"jump\"}'")
-o.bind("SUPER + ALT + T", "yfocus add", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"add\"}'")
-o.bind("SUPER + CTRL + T", "Open yfocus", "omarchy-shell shell toggle You-ne5.yfocus '{\"mode\":\"manage\"}'")
+o.bind("SUPER + SHIFT + T", "yfocus jump", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"jump\"}'")
+o.bind("SUPER + ALT + T", "yfocus add", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"add\"}'")
+o.bind("SUPER + CTRL + T", "Open yfocus", "omarchy-shell shell toggle youn.yfocus '{\"mode\":\"manage\"}'")
 ```
 
 ## CLI
@@ -114,4 +114,4 @@ Any edit under `ts/`, `manifest.json` or `build.sh` requires a fresh `make bundl
 
 ## License
 
-MIT — Copyright (c) 2026 You-ne5
+MIT — Copyright (c) 2026 youn
